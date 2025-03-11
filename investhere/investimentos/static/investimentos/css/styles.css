@@ -1,0 +1,95 @@
+/* investimentos/static/investimentos/css/styles.css */
+
+/* RESET */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    font-family: 'Roboto', sans-serif;
+    background-color: #1D2630;
+    color: #ffffff;
+    overflow-x: hidden;
+}
+
+h1, h2, h3 {
+    color: #ffffff;
+}
+
+/* Layout Centralizado */
+.container {
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 20px;
+}
+
+.login-container, .page-container {
+    background-color: #121B26;
+    border-radius: 15px;
+    padding: 40px;
+    box-shadow: 0px 8px 20px rgba(0, 0, 0, 0.2);
+}
+
+/* Buttons and Forms */
+input[type="text"], input[type="password"], input[type="number"], textarea {
+    padding: 15px;
+    width: 100%;
+    border-radius: 10px;
+    border: none;
+    font-size: 16px;
+    margin-bottom: 20px;
+}
+
+button {
+    background-color: #00BFFF;
+    color: #fff;
+    border: none;
+    padding: 15px;
+    width: 100%;
+    font-size: 18px;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+button:hover {
+    background-color: #0077cc;
+}
+
+/* Cards and Layout */
+.dashboard-container, .simulacao-container, .comparar-container, .rentabilidade-container, .calcular-container {
+    display: grid;
+    gap: 20px;
+    grid-template-columns: 1fr 1fr;
+}
+
+.card {
+    background-color: #1D2630;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+}
+
+.card h3 {
+    font-size: 24px;
+    color: #00BFFF;
+    margin-bottom: 10px;
+}
+
+.card p {
+    font-size: 16px;
+    color: #f1f1f1;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    .dashboard-container, .simulacao-container, .comparar-container, .rentabilidade-container, .calcular-container {
+        grid-template-columns: 1fr;
+    }
+
+    .login-container {
+        width: 90%;
+    }
+}
