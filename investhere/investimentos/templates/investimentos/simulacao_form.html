@@ -10,12 +10,65 @@
         .container { max-width: 600px; margin: auto; padding: 50px; background: #121B26; border-radius: 20px; margin-top: 120px; box-shadow: 0px 10px 20px rgba(255, 215, 0, 0.1); }
         .btn-submit { background-color: #007BFF; color: white; font-weight: bold; padding: 12px; font-size: 18px; }
         .btn-submit:hover { background-color: #0056b3; }
+        .navbar {
+            background-color: #121B26;
+            padding: 15px;
+        }
+        .navbar-brand {
+            color: #007BFF;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .nav-link {
+            color: white;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+        .nav-link:hover {
+            color: #007BFF;
+        }
+        .container-menu {
+            max-width: 800px;
+            margin: auto;
+            padding: 50px;
+            background: #121B26;
+            border-radius: 20px;
+            margin-top: 50px;
+            text-align: center;
+            box-shadow: 0px 10px 20px rgba(255, 215, 0, 0.1);
+        }
+        .menu-item {
+            margin: 20px 0;
+            padding: 15px;
+            background: #1E2A36;
+            border-radius: 10px;
+            font-size: 20px;
+            transition: 0.3s;
+        }
+        .menu-item:hover {
+            background: #007BFF;
+            cursor: pointer;
+        }
     </style>
 </head>
 <body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Investly</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/dashboard/">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/simulacao/">Simulação</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calcular-investimento-necessario/">Cálculo de Investimento</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calculo-explicacao/">Explicação</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/historico/">Historico</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
     <div class="container">
         <h2 class="text-center mb-4">Simulação de Investimentos</h2>
-        <p class="text-center">Utilize esta ferramenta para simular o crescimento do seu investimento ao longo do tempo. Informe o valor inicial, a taxa de rentabilidade e o prazo desejado, e o sistema calculará a projeção do seu capital ao final do período.</p>
+        <p class="text-center">Utilize esta ferramenta para simular o crescimento ao longo do tempo do investimento que você deseja realizar. </p>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}

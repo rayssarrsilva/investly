@@ -17,6 +17,7 @@ from django.contrib.auth.forms import PasswordResetForm
 from django.contrib.auth.tokens import default_token_generator
 from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
+from django.utils import timezone
 from django.utils.encoding import force_bytes, force_str
 from .forms import RegistroForm, LoginForm, PasswordResetRequestForm, PasswordResetForm
 import matplotlib.pyplot as plt
@@ -47,6 +48,8 @@ def calcular_valor_futuro(valor_investido, rentabilidade_anual, prazo_meses, apo
     return round(valor_futuro, 2)
 
 # View para Simulação de Investimento
+from .models import SimulacaoHistorico
+
 def simulacao_investimento_view(request):
     if request.method == "POST":
         form = SimulacaoForm(request.POST)
@@ -60,6 +63,18 @@ def simulacao_investimento_view(request):
             # Calcular o valor futuro do investimento
             valor_futuro = calcular_valor_futuro(valor_investido, rentabilidade_anual, prazo_meses, 0, taxa_administracao, imposto_renda)
 
+            # Salvar no histórico
+            SimulacaoHistorico.objects.create(
+                usuario=request.user if request.user.is_authenticated else None,
+                tipo_simulacao="Investimento",
+                valor_inicial=valor_investido,
+                rentabilidade_anual=rentabilidade_anual,
+                prazo_meses=prazo_meses,
+                taxa_administracao=taxa_administracao,
+                imposto_renda=imposto_renda,
+                valor_futuro=valor_futuro,
+            )
+
             # Renderizar o resultado da simulação
             return render(request, 'investimentos/simulacao_resultado.html', {
                 'form': form,
@@ -67,10 +82,43 @@ def simulacao_investimento_view(request):
             })
     else:
         form = SimulacaoForm()
-
-    # Exibir o formulário de simulação
     return render(request, 'investimentos/simulacao_form.html', {'form': form})
 
+#HISTORICO DE SIMULAÇÕES --------------------------------------------
+def historico_simulacoes_view(request):
+    historico = SimulacaoHistorico.objects.filter(usuario=request.user).order_by('-data_criacao') if request.user.is_authenticated else []
+    return render(request, 'investimentos/historico.html', {'historico': historico})
+
+def excluir_simulacao(request, simulacao_id):
+    simulacao = SimulacaoHistorico.objects.filter(id=simulacao_id, usuario=request.user).first()
+    if simulacao:
+        simulacao.delete()
+        messages.success(request, "Simulação excluída com sucesso.")
+    return redirect('historico_simulacoes')
+
+def excluir_todas_simulacoes(request):
+    if request.user.is_authenticated:
+        SimulacaoHistorico.objects.filter(usuario=request.user).delete()
+        messages.success(request, "Todo o histórico foi excluído com sucesso.")
+    return redirect('historico_simulacoes')
+
+def historico_simulacoes_template(request):
+    historico = SimulacaoHistorico.objects.filter(usuario=request.user).order_by('-data_criacao') if request.user.is_authenticated else []
+    return render(request, 'investimentos/historico.html', {
+        'historico': historico,
+        'excluir_todas_url': 'excluir_todas_simulacoes',
+        'excluir_simulacao_url': 'excluir_simulacao'
+    })
+
+def historico_simulacoes_view(request):
+    if request.user.is_authenticated:
+        historico = SimulacaoHistorico.objects.filter(usuario=request.user).order_by('-data_criacao')
+    else:
+        historico = []
+
+    return render(request, 'investimentos/historico.html', {'historico': historico})
+
+#-----------------------------------------------------------
 # View para Calcular Investimento Necessário
 def calcular_investimento_necessario_view(request):
     if request.method == "POST":
@@ -79,24 +127,36 @@ def calcular_investimento_necessario_view(request):
             valor_desejado = form.cleaned_data['valor_desejado']
             rentabilidade_anual = form.cleaned_data['rentabilidade_anual']
             valor_maximo = form.cleaned_data['valor_maximo']
-            
+
             # Calcular o tempo necessário
             tempo_necessario = calcular_tempo_necessario(valor_desejado, rentabilidade_anual, valor_maximo)
-            
+
             # Calcular o valor total acumulado até lá
             valor_total = calcular_valor_futuro(0, rentabilidade_anual, tempo_necessario, valor_maximo)
-            
+
+            # Salvar no histórico como "Investimento Necessário"
+            SimulacaoHistorico.objects.create(
+                usuario=request.user if request.user.is_authenticated else None,
+                tipo_simulacao="Investimento Necessário",
+                valor_inicial=0,  # Indica que o investimento foi planejado a partir de aportes
+                rentabilidade_anual=rentabilidade_anual,
+                valor_desejado=valor_desejado,
+                valor_maximo=valor_maximo,
+                tempo_necessario=tempo_necessario,
+                valor_futuro=valor_total,  # Usando o valor total como resultado da simulação
+                data_criacao=timezone.now()
+            )
+
             return render(request, 'investimentos/calcular_resultado.html', {
                 'form': form,
                 'tempo_necessario': tempo_necessario,
                 'valor_total': valor_total,
                 'valor_desejado': valor_desejado,
-                'rentabilidade_anual': rentabilidade_anual,
+                'valor_maximo': valor_maximo,
             })
     else:
         form = CalcularInvestimentoNecessarioForm()
     return render(request, 'investimentos/calcular_form.html', {'form': form})
-
 # Função de cálculo do tempo necessário para atingir o valor desejado usado na função calcular_investimento_necessario_view (Formulario)
 def calcular_tempo_necessario(valor_desejado, rentabilidade_anual, valor_maximo):
     if valor_maximo <= 0:
@@ -169,11 +229,19 @@ def gerar_grafico():
 
 def dashboard_view(request):
     grafico1, grafico2, grafico3 = gerar_grafico()
-    return render(request, 'investimentos/dashboard.html', {
+
+    # Buscar a última simulação realizada pelo usuário autenticado
+    ultima_simulacao = None
+    if request.user.is_authenticated:
+        ultima_simulacao = SimulacaoHistorico.objects.filter(usuario=request.user).order_by('-data_criacao').first()
+
+    return render(request, 'investimentos/dashboard_view.html', {
         'grafico1': grafico1,
         'grafico2': grafico2,
         'grafico3': grafico3,
+        'ultima_simulacao': ultima_simulacao  # Passando a variável para o template
     })
+
 
 # Classe para Logout
 class LogoutView(APIView):
@@ -206,53 +274,3 @@ def menu_principal(request):
 
 def registro_view(request):
     return render(request, 'investimentos/registro.html')
-
-def password_reset_request_view(request):
-    if request.method == "POST":
-        form = PasswordResetRequestForm(request.POST)
-        if form.is_valid():
-            email = form.cleaned_data["email"]
-            associated_users = User.objects.filter(email=email)
-            if associated_users.exists():
-                for user in associated_users:
-                    subject = "Redefinição de Senha"
-                    uid = urlsafe_base64_encode(force_bytes(user.pk))
-                    token = default_token_generator.make_token(user)
-                    reset_url = f"http://127.0.0.1:8000/reset/{uid}/{token}/"
-                    message = f"Clique no link para redefinir sua senha: {reset_url}"
-                    send_mail(subject, message, "noreply@investly.com", [email])
-                messages.success(request, "Um e-mail de redefinição de senha foi enviado.")
-                return redirect("login")
-            else:
-                messages.error(request, "Nenhuma conta encontrada com esse e-mail.")
-    else:
-        form = PasswordResetRequestForm()
-    return render(request, "investimentos/password_reset.html", {"form": form})
-
-
-def password_reset_confirm_view(request, uidb64, token):
-    try:
-        uid = force_str(urlsafe_base64_decode(uidb64))
-        user = User.objects.get(pk=uid)
-    except (TypeError, ValueError, OverflowError, User.DoesNotExist):
-        user = None
-    
-    if user is not None and default_token_generator.check_token(user, token):
-        if request.method == "POST":
-            form = PasswordResetForm(request.POST)
-            if form.is_valid():
-                new_password = form.cleaned_data['new_password']
-                confirm_password = form.cleaned_data['confirm_password']
-                if new_password == confirm_password:
-                    user.set_password(new_password)
-                    user.save()
-                    messages.success(request, "Senha redefinida com sucesso! Faça login com sua nova senha.")
-                    return redirect("login")
-                else:
-                    messages.error(request, "As senhas não coincidem. Tente novamente.")
-        else:
-            form = PasswordResetForm()
-        return render(request, "investimentos/password_reset_confirm.html", {"form": form})
-    else:
-        messages.error(request, "O link de redefinição de senha é inválido ou expirou.")
-        return redirect("password_reset")

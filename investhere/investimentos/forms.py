@@ -8,9 +8,9 @@ class SimulacaoForm(forms.Form):
     imposto_renda = forms.DecimalField(label="Imposto de Renda (%)", max_digits=5, decimal_places=2, required=False, initial=0)
 
 class CalcularInvestimentoNecessarioForm(forms.Form):
-    valor_desejado = forms.DecimalField(label="Valor Desejado", max_digits=10, decimal_places=2)
+    valor_desejado = forms.DecimalField(label="Objetivo Financeiro", max_digits=10, decimal_places=2)
     rentabilidade_anual = forms.DecimalField(label="Rentabilidade Anual (%)", max_digits=5, decimal_places=2)
-    valor_maximo = forms.DecimalField(label="Valor Máximo Disponível", max_digits=10, decimal_places=2)
+    valor_maximo = forms.DecimalField(label="Aplicação Mensal", max_digits=10, decimal_places=2)
 
 class RegistroForm(forms.Form):
     username = forms.CharField(

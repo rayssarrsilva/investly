@@ -8,7 +8,10 @@ from .views import (
     dashboard_view,
     explicacao_calculo_view,
     menu_principal,
-    registro_view)
+    registro_view,
+    historico_simulacoes_view,
+    excluir_todas_simulacoes,
+    excluir_simulacao,)
 
 urlpatterns = [
     # Registrando as URLs com o DefaultRouter para o InvestimentoViewSet
@@ -21,7 +24,7 @@ urlpatterns = [
     path('calcular-investimento-necessario/', calcular_investimento_necessario_view, name='calcular-investimento-necessario'),
 
     # URL de login
-    path('login/', login_view, name='login'),
+    path('', login_view, name='login'),
 
     #Dashboard
     path('dashboard/', dashboard_view, name='dashboard'),
@@ -31,5 +34,12 @@ urlpatterns = [
 
     path('calculo-explicacao/', explicacao_calculo_view, name='calculo_explicacao'),
     
-    path('menu_principal/', menu_principal, name='menu_principal')
+    path('menu_principal/', menu_principal, name='menu_principal'),
+
+    path('historico/', historico_simulacoes_view, name='historico_simulacoes'),
+
+    path('historico/excluir/<int:simulacao_id>/', excluir_simulacao, name='excluir_simulacao'),
+
+    path('historico/excluir-todas/', excluir_todas_simulacoes, name='excluir_todas_simulacoes'),
+
 ]

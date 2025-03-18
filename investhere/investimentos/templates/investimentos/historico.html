@@ -1,0 +1,140 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Histórico de Simulações</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
+    <style>
+        body { background-color: #1D2630; color: white; font-family: 'Roboto', sans-serif; }
+        .container { max-width: 900px; margin: auto; padding: 50px; background: #121B26; border-radius: 20px; margin-top: 50px; }
+        .table { color: white; }
+        .btn-danger { font-size: 14px; padding: 5px 10px; }
+        .navbar {
+            background-color: #121B26;
+            padding: 15px;
+        }
+        .navbar-brand {
+            color: #007BFF;
+            font-size: 24px;
+            font-weight: bold;
+        }
+        .nav-link {
+            color: white;
+            font-size: 18px;
+            margin-right: 15px;
+        }
+        .nav-link:hover {
+            color: #007BFF;
+        }
+        .section-title {
+            background: #007BFF;
+            color: white;
+            padding: 10px;
+            border-radius: 10px;
+            text-align: center;
+            margin-bottom: 15px;
+            font-size: 20px;
+            font-weight: bold;
+        }
+        .empty-message {
+            text-align: center;
+            font-size: 16px;
+            color: #aaa;
+            padding: 15px;
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="#">Investly</a>
+            <div class="collapse navbar-collapse">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item"><a class="nav-link" href="/dashboard/">Dashboard</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/simulacao/">Simulação</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calcular-investimento-necessario/">Cálculo de Investimento</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calculo-explicacao/">Explicação</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/historico/">Histórico</a></li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <h2 class="text-center mb-4">Histórico de Simulações</h2>
+
+        <!-- Tabela de Investimentos -->
+        <div class="section-title"> Investimentos</div>
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Rentabilidade</th>
+                    <th>Valor Inicial</th>
+                    <th>Valor Futuro</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for simulacao in historico %}
+                    {% if simulacao.tipo_simulacao == "Investimento" %}
+                    <tr>
+                        <td>{{ simulacao.data_criacao|date:"d/m/Y H:i" }}</td>
+                        <td>{{ simulacao.rentabilidade_anual }}%</td>
+                        <td>R$ {{ simulacao.valor_inicial }}</td>
+                        <td>R$ {{ simulacao.valor_futuro }}</td>
+                        <td>
+                            <a href="{% url 'excluir_simulacao' simulacao.id %}" class="btn btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% empty %}
+                <tr><td colspan="6" class="empty-message">Nenhum investimento registrado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Tabela de Investimento Necessário -->
+        <br>
+        <br>
+        <div class="section-title"> Cálculo de Investimento Necessário</div>
+        <table class="table table-dark table-striped">
+            <thead>
+                <tr>
+                    <th>Data</th>
+                    <th>Rentabilidade</th>
+                    <th>Valor Desejado</th>
+                    <th>Valor Total Acumulado</th>
+                    <th>Valor Máximo Aplicado</th>
+                    <th>Tempo Necessário</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for simulacao in historico %}
+                    {% if simulacao.tipo_simulacao == "Investimento Necessário" %}
+                    <tr>
+                        <td>{{ simulacao.data_criacao|date:"d/m/Y H:i" }}</td>
+                        <td>{{ simulacao.rentabilidade_anual }}%</td>
+                        <td>R$ {{ simulacao.valor_desejado }}</td>
+                        <td>R$ {{ simulacao.valor_total }}</td>
+                        <td>R$ {{ simulacao.valor_maximo }}</td>
+                        <td>{{ simulacao.tempo_necessario }} meses</td>
+                        <td>
+                            <a href="{% url 'excluir_simulacao' simulacao.id %}" class="btn btn-danger">Excluir</a>
+                        </td>
+                    </tr>
+                    {% endif %}
+                {% empty %}
+                <tr><td colspan="7" class="empty-message">Nenhum cálculo de investimento realizado.</td></tr>
+                {% endfor %}
+            </tbody>
+        </table>
+
+        <!-- Botão para excluir todo o histórico -->
+        <a href="{% url 'excluir_todas_simulacoes' %}" class="btn btn-danger w-100 mb-3">Excluir Todo o Histórico</a>
+        <a href="/menu_principal/" class="btn btn-primary w-100">Voltar</a>
+    </div>
+</body>
+</html>
