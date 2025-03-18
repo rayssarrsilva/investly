@@ -19,6 +19,10 @@ from django.core.mail import send_mail
 from django.utils.http import urlsafe_base64_encode, urlsafe_base64_decode
 from django.utils.encoding import force_bytes, force_str
 from .forms import RegistroForm, LoginForm, PasswordResetRequestForm, PasswordResetForm
+import matplotlib.pyplot as plt
+import numpy as np
+import io
+import base64
 
 # Classe InvestimentoViewSet
 class InvestimentoViewSet(viewsets.ModelViewSet):
@@ -75,18 +79,22 @@ def calcular_investimento_necessario_view(request):
             valor_desejado = form.cleaned_data['valor_desejado']
             rentabilidade_anual = form.cleaned_data['rentabilidade_anual']
             valor_maximo = form.cleaned_data['valor_maximo']
-
+            
             # Calcular o tempo necessário
             tempo_necessario = calcular_tempo_necessario(valor_desejado, rentabilidade_anual, valor_maximo)
-
+            
+            # Calcular o valor total acumulado até lá
+            valor_total = calcular_valor_futuro(0, rentabilidade_anual, tempo_necessario, valor_maximo)
+            
             return render(request, 'investimentos/calcular_resultado.html', {
                 'form': form,
                 'tempo_necessario': tempo_necessario,
-                'valor_desejado': valor_desejado
+                'valor_total': valor_total,
+                'valor_desejado': valor_desejado,
+                'rentabilidade_anual': rentabilidade_anual,
             })
     else:
         form = CalcularInvestimentoNecessarioForm()
-
     return render(request, 'investimentos/calcular_form.html', {'form': form})
 
 # Função de cálculo do tempo necessário para atingir o valor desejado usado na função calcular_investimento_necessario_view (Formulario)
@@ -106,6 +114,66 @@ def calcular_tempo_necessario(valor_desejado, rentabilidade_anual, valor_maximo)
 #Função para renderizar o template com as explicações dos cálculos
 def explicacao_calculo_view(request):
     return render(request, 'investimentos/explicacao.html')
+
+def gerar_grafico():
+    investimentos = Investimento.objects.all()
+    nomes = [inv.nome for inv in investimentos]
+    valores_iniciais = [inv.valor_inicial for inv in investimentos]
+    valores_futuros = [inv.valor_futuro for inv in investimentos]
+    rentabilidades = [inv.rentabilidade_anual / 12 for inv in investimentos]
+    prazos = [inv.prazo_meses for inv in investimentos]
+
+    # 1️⃣ Gráfico de Rentabilidade Mensal
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.bar(nomes, rentabilidades, color='blue')
+    ax.set_xlabel("Investimentos")
+    ax.set_ylabel("Rentabilidade Mensal (%)")
+    ax.set_title("Rentabilidade Mensal dos Investimentos")
+    img1 = io.BytesIO()
+    plt.savefig(img1, format='png')
+    img1.seek(0)
+    grafico1 = base64.b64encode(img1.getvalue()).decode()
+    plt.close()
+
+    # 2️⃣ Comparação: Valor Inicial x Valor Futuro
+    fig, ax = plt.subplots(figsize=(6, 4))
+    x = np.arange(len(nomes))
+    width = 0.35
+    ax.bar(x - width/2, valores_iniciais, width, label='Valor Inicial', color='gray')
+    ax.bar(x + width/2, valores_futuros, width, label='Valor Futuro', color='green')
+    ax.set_xticks(x)
+    ax.set_xticklabels(nomes, rotation=45)
+    ax.set_xlabel("Investimentos")
+    ax.set_ylabel("Valor (R$)")
+    ax.set_title("Comparação: Valor Investido vs Valor Futuro")
+    ax.legend()
+    img2 = io.BytesIO()
+    plt.savefig(img2, format='png')
+    img2.seek(0)
+    grafico2 = base64.b64encode(img2.getvalue()).decode()
+    plt.close()
+
+    # 3️⃣ Gráfico de Tempo Necessário para Alcançar o Valor Desejado
+    fig, ax = plt.subplots(figsize=(6, 4))
+    ax.plot(valores_futuros, prazos, marker='o', linestyle='-', color='red')
+    ax.set_xlabel("Valor Futuro (R$)")
+    ax.set_ylabel("Meses Necessários")
+    ax.set_title("Tempo Necessário para Atingir o Valor Desejado")
+    img3 = io.BytesIO()
+    plt.savefig(img3, format='png')
+    img3.seek(0)
+    grafico3 = base64.b64encode(img3.getvalue()).decode()
+    plt.close()
+
+    return grafico1, grafico2, grafico3
+
+def dashboard_view(request):
+    grafico1, grafico2, grafico3 = gerar_grafico()
+    return render(request, 'investimentos/dashboard.html', {
+        'grafico1': grafico1,
+        'grafico2': grafico2,
+        'grafico3': grafico3,
+    })
 
 # Classe para Logout
 class LogoutView(APIView):
@@ -138,32 +206,6 @@ def menu_principal(request):
 
 def registro_view(request):
     return render(request, 'investimentos/registro.html')
-
-
-def register_view(request):
-    if request.method == "POST":
-        form = RegistroForm(request.POST)
-        if form.is_valid():
-            username = form.cleaned_data['username']
-            email = form.cleaned_data['email']
-            password = form.cleaned_data['password']
-            
-            if User.objects.filter(username=username).exists():
-                messages.error(request, "Usuário já existe. Escolha um nome de usuário diferente.")
-                return render(request, "investimentos/register.html", {"form": form})
-            
-            if User.objects.filter(email=email).exists():
-                messages.error(request, "E-mail já cadastrado. Use outro e-mail ou recupere sua conta.")
-                return render(request, "investimentos/register.html", {"form": form})
-            
-            user = User.objects.create_user(username=username, email=email, password=password)
-            login(request, user)
-            messages.success(request, "Registro bem-sucedido! Redirecionando para o menu principal...")
-            return redirect("menu_principal")
-    else:
-        form = RegistroForm()
-    return render(request, "investimentos/register.html", {"form": form})
-
 
 def password_reset_request_view(request):
     if request.method == "POST":

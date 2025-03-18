@@ -28,4 +28,5 @@ urlpatterns = [
     path('api/docs/', schema_view.with_ui('swagger', cache_timeout=0), name='swagger-docs'),
     path('api/redoc/', schema_view.with_ui('redoc', cache_timeout=0), name='redoc-docs'),
     path('api/logout/', LogoutView.as_view(), name='logout'),
+    path('accounts/', include('accounts.urls')),  # Inclusão das URLs do app accounts
 ]

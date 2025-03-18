@@ -3,18 +3,30 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Resultado do Cálculo</title>
+    <title>Dashboard de Investimentos</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #1D2630; color: white; font-family: 'Roboto', sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 50px; background: #121B26; border-radius: 20px; margin-top: 120px; box-shadow: 0px 10px 20px rgba(255, 215, 0, 0.1); text-align: center; }
-        .btn-primary { background-color: #007BFF; font-weight: bold; padding: 12px; font-size: 18px; }
-        .btn-primary:hover { background-color: #0056b3; }
-    </style>
 </head>
 <body>
     <div class="container">
-   
+        <h1 class="mt-4">Dashboard de Investimentos</h1>
+
+        <div class="row mt-4">
+            <div class="col-md-6">
+                <h3>Rentabilidade Mensal dos Investimentos</h3>
+                <img src="data:image/png;base64,{{ grafico1 }}" class="img-fluid" alt="Rentabilidade Mensal">
+            </div>
+            <div class="col-md-6">
+                <h3>Comparação: Valor Investido vs Valor Futuro</h3>
+                <img src="data:image/png;base64,{{ grafico2 }}" class="img-fluid" alt="Valor Investido vs Futuro">
+            </div>
+        </div>
+
+        <div class="row mt-4">
+            <div class="col-md-12">
+                <h3>Tempo Necessário para Atingir o Valor Desejado</h3>
+                <img src="data:image/png;base64,{{ grafico3 }}" class="img-fluid" alt="Tempo Necessário">
+            </div>
+        </div>
     </div>
 </body>
 </html>

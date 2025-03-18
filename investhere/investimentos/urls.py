@@ -23,8 +23,6 @@ urlpatterns = [
     # URL de login
     path('login/', login_view, name='login'),
 
-    path('registro/', registro_view, name='registro'),
-
     #Dashboard
     path('dashboard/', dashboard_view, name='dashboard'),
 
