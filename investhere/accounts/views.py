@@ -23,7 +23,7 @@ def register(request):
                 user.save()
                 login(request, user)
                 messages.success(request, 'Registro bem-sucedido!')
-                return redirect('dashboard')
+                return redirect('menu_principal')
         else:
             messages.error(request, "Erro no formulário. Verifique os campos preenchidos.")
 

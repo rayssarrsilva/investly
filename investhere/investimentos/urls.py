@@ -5,10 +5,8 @@ from .views import (
     simulacao_investimento_view,
     calcular_investimento_necessario_view,
     login_view,
-    dashboard_view,
     explicacao_calculo_view,
     menu_principal,
-    registro_view,
     historico_simulacoes_view,
     excluir_todas_simulacoes,
     excluir_simulacao,)
@@ -24,10 +22,9 @@ urlpatterns = [
     path('calcular-investimento-necessario/', calcular_investimento_necessario_view, name='calcular-investimento-necessario'),
 
     # URL de login
+    path('login/', login_view, name='login'),
+    
     path('', login_view, name='login'),
-
-    #Dashboard
-    path('dashboard/', dashboard_view, name='dashboard'),
 
     # URL de logout (possivelmente para uma operação POST)
     path('logout/', LogoutView.as_view(), name='logout'),

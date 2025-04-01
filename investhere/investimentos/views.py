@@ -227,20 +227,6 @@ def gerar_grafico():
 
     return grafico1, grafico2, grafico3
 
-def dashboard_view(request):
-    grafico1, grafico2, grafico3 = gerar_grafico()
-
-    # Buscar a última simulação realizada pelo usuário autenticado
-    ultima_simulacao = None
-    if request.user.is_authenticated:
-        ultima_simulacao = SimulacaoHistorico.objects.filter(usuario=request.user).order_by('-data_criacao').first()
-
-    return render(request, 'investimentos/dashboard_view.html', {
-        'grafico1': grafico1,
-        'grafico2': grafico2,
-        'grafico3': grafico3,
-        'ultima_simulacao': ultima_simulacao  # Passando a variável para o template
-    })
 
 
 # Classe para Logout
@@ -265,9 +251,6 @@ def login_view(request):
                 messages.error(request, "Usuário ou senha inválidos.")
 
     return render(request, "investimentos/login.html", {"form": form})
-
-def dashboard_view(request):
-    return render(request, 'investimentos/dashboard_view.html')
 
 def menu_principal(request):
     return render(request, 'investimentos/menu_principal.html')
