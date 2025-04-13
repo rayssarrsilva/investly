@@ -4,6 +4,8 @@
 
 O **Investly** é um sistema para simulação e análise de investimentos. Ele calcula a rentabilidade mensal, compara diferentes investimentos e sugere o tempo ou valor necessário para atingir uma meta financeira.
 
+Ao baixar o projeto localmente é importante entrar na pasta do projeto (investly/investhere) e rodar o código: python manage.py runserver 
+
 ## 🚀 Tecnologias Utilizadas
 
 - **Python 3**
