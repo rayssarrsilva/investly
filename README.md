@@ -10,7 +10,6 @@ O **Investly** é um sistema para simulação e análise de investimentos. Ele c
 - **Django** (Back-end)
 - **Django REST Framework (DRF)** (API RESTful)
 - **PostgreSQL** (Banco de dados)
-- **Docker** (Containerização)
 
 ## 📂 Estrutura do Projeto
 
