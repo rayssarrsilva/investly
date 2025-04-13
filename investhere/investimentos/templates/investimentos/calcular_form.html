@@ -67,9 +67,9 @@
         </div>
     </nav>
     <div class="container">
-        <h2 class="text-center mb-4">Calcular Investimento Necessário</h2>
-        <p class="text-center"> Utilize este simulador para descobrir o valor inicial necessário para atingir seu objetivo financeiro dentro de um período estipulado pelo simulador investly. 
-            <br>Com base na taxa de rentabilidade anual informada (geralmente a taxa selic) e na aplicação mensal Maxima, o sistema calcula o tempo exato que deve ser investido para alcançar a sua meta financeira.</p>
+        <h2 class="text-center mb-4">Cálculo do tempo de Acumulação</h2>
+        <p class="text-center"> Utilize este simulador para descobrir o tempo necessário para atingir seu objetivo financeiro. 
+            <br>Com base no objetivo financeiro, rentabilidade anual em porcentagem baseado na taxa selic atual e aportes mensais.</p>
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}

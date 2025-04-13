@@ -58,6 +58,7 @@
             <div class="collapse navbar-collapse">
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item"><a class="nav-link" href="/simulacao/">Simulação</a></li>
+                    <li class="nav-item"><a class="nav-link" href="/calcular-investimento-necessario/">Cálculo de Investimento</a></li>
                     <li class="nav-item"><a class="nav-link" href="/historico/">Historico</a></li>
                     <li class="nav-item"><a class="nav-link" href="/login/">Logout</a></li>
                 </ul>
@@ -66,7 +67,8 @@
     </nav>
     <div class="container">
         <h2 class="text-center mb-4">Simulação de Investimentos</h2>
-        <p class="text-center">Utilize esta ferramenta para simular o crescimento ao longo do tempo do investimento que você deseja realizar. </p>
+        <p class="text-center">O sistema realiza a simulação do valor futuro de um investimento com base nos seguintes parâmetros fornecidos pelo usuário:<br><br> valor inicial investido, rentabilidade anual (percentual), prazo de aplicação em meses, taxa de administração e alíquota de imposto de renda.<br>
+
         <form method="POST">
             {% csrf_token %}
             {{ form.as_p }}
