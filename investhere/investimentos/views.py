@@ -255,5 +255,3 @@ def login_view(request):
 def menu_principal(request):
     return render(request, 'investimentos/menu_principal.html')
 
-def registro_view(request):
-    return render(request, 'investimentos/registro.html')
