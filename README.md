@@ -14,10 +14,15 @@ O Investly é uma plataforma web desenvolvida com Django e Django REST Framework
 🚀 Funcionalidades principais
 ✅ Simulação de Valor Futuro
 -Calcule quanto seu dinheiro poderá render ao longo do tempo com base em:
+   
    -Valor inicial investido
+   
    -Rentabilidade anual (%)
+   
    -Prazo (em meses)
+   
    -Aportes mensais opcionais
+   
    -Taxas (administração e IR)
 
 ✅ Projeção de Tempo para Meta Financeira
