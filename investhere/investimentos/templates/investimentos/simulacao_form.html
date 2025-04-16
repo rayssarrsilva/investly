@@ -1,3 +1,4 @@
+{% load widget_tweaks %}
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
@@ -67,13 +68,24 @@
     </nav>
     <div class="container">
         <h2 class="text-center mb-4">Simulação de Investimentos</h2>
-        <p class="text-center">O sistema realiza a simulação do valor futuro de um investimento com base nos seguintes parâmetros fornecidos pelo usuário:<br><br> valor inicial investido, rentabilidade anual (percentual), prazo de aplicação em meses, taxa de administração e alíquota de imposto de renda.<br>
-
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-submit w-100">Calcular</button>
-        </form>
+        <div class="mb-4 text-light" style="font-size: 15px;">
+            <h5 class="text-info">Como funciona a simulação?</h5>
+            <p>
+                Esta simulação calcula o valor futuro de um investimento com base no <strong>percentual do CDI/Selic</strong> oferecido pelo banco, considerando também a 
+                <strong>taxa atual do CDI/Selic</strong>, o <strong>prazo da aplicação</strong>, possíveis <strong>taxas de administração</strong> e a <strong>alíquota de imposto de renda</strong>.
+            </p>
+            <p>
+                O sistema utiliza capitalização composta mensal para estimar o rendimento líquido mês a mês, proporcionando uma visão realista de quanto seu dinheiro pode render.
+            </p>
+            <p>
+                Ideal para comparar propostas de bancos e planejar seus investimentos com segurança.
+            </p>
+        </div>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+                <button type="submit" class="btn btn-submit w-100">Calcular</button>
+            </form>            
     </div>
 </body>
 </html>

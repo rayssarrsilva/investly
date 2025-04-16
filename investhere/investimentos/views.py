@@ -24,30 +24,47 @@ import matplotlib.pyplot as plt
 import numpy as np
 import io
 import base64
+from decimal import Decimal
 
-# Classe InvestimentoViewSet
+
 class InvestimentoViewSet(viewsets.ModelViewSet):
     queryset = Investimento.objects.all()
     serializer_class = InvestimentoSerializer
     permission_classes = [IsAuthenticated]
 
-# Função de cálculo da rentabilidade mensal
-def calcular_rentabilidade_mensal(rentabilidade_anual, taxa_administracao=0, imposto_renda=0):
-    rentabilidade_liquida = rentabilidade_anual - (rentabilidade_anual * taxa_administracao) - (rentabilidade_anual * imposto_renda)
-    return rentabilidade_liquida / 12
+def calcular_rentabilidade_mensal(percentual_cdi, cdi_atual, taxa_administracao=0, imposto_renda=0):
+    # Converte tudo para float para evitar erro com Decimal
+    percentual_cdi = float(percentual_cdi)
+    cdi_atual = float(cdi_atual)
+    taxa_administracao = float(taxa_administracao)
+    imposto_renda = float(imposto_renda)
 
-# Função de cálculo do valor futuro
-def calcular_valor_futuro(valor_investido, rentabilidade_anual, prazo_meses, aporte_mensal=0, taxa_administracao=0, imposto_renda=0):
-    rentabilidade_mensal = calcular_rentabilidade_mensal(rentabilidade_anual, taxa_administracao, imposto_renda)
-    valor_futuro = valor_investido
+    # Calcula CDI mensal a partir do anual
+    cdi_mensal = (1 + (cdi_atual / 100)) ** (1 / 12) - 1
+
+    # Calcula a rentabilidade líquida
+    rentabilidade_bruta = cdi_mensal * (percentual_cdi / 100)
+    rentabilidade_liquida = rentabilidade_bruta * (1 - taxa_administracao / 100) * (1 - imposto_renda / 100)
+
+    return rentabilidade_liquida
+
+
+def calcular_valor_futuro(valor_investido, percentual_cdi, cdi_atual, prazo_meses, aporte_mensal=0, taxa_administracao=0, imposto_renda=0):
+    # Converte os valores para float para evitar conflitos com Decimal
+    valor_futuro = float(valor_investido)
+    aporte_mensal = float(aporte_mensal)
+
+    rentabilidade_mensal = calcular_rentabilidade_mensal(percentual_cdi, cdi_atual, taxa_administracao, imposto_renda)
 
     for _ in range(prazo_meses):
-        valor_futuro += valor_futuro * (rentabilidade_mensal / 100)
+        valor_futuro += valor_futuro * rentabilidade_mensal
         valor_futuro += aporte_mensal
-    
+
     return round(valor_futuro, 2)
 
+
 # View para Simulação de Investimento
+from django.shortcuts import render
 from .models import SimulacaoHistorico
 
 def simulacao_investimento_view(request):
@@ -55,27 +72,25 @@ def simulacao_investimento_view(request):
         form = SimulacaoForm(request.POST)
         if form.is_valid():
             valor_investido = form.cleaned_data['valor_investido']
-            rentabilidade_anual = form.cleaned_data['rentabilidade_anual']
+            percentual_cdi = form.cleaned_data['percentual_cdi']
+            cdi_atual = form.cleaned_data['cdi_atual']
             prazo_meses = form.cleaned_data['prazo_meses']
-            taxa_administracao = form.cleaned_data['taxa_administracao']
-            imposto_renda = form.cleaned_data['imposto_renda']
+            taxa_administracao = form.cleaned_data['taxa_administracao'] or 0
+            imposto_renda = form.cleaned_data['imposto_renda'] or 0
 
-            # Calcular o valor futuro do investimento
-            valor_futuro = calcular_valor_futuro(valor_investido, rentabilidade_anual, prazo_meses, 0, taxa_administracao, imposto_renda)
+            valor_futuro = calcular_valor_futuro(valor_investido, percentual_cdi, cdi_atual, prazo_meses, 0, taxa_administracao, imposto_renda)
 
-            # Salvar no histórico
             SimulacaoHistorico.objects.create(
                 usuario=request.user if request.user.is_authenticated else None,
                 tipo_simulacao="Investimento",
                 valor_inicial=valor_investido,
-                rentabilidade_anual=rentabilidade_anual,
+                rentabilidade_anual=percentual_cdi,  # Armazenando % do CDI
                 prazo_meses=prazo_meses,
                 taxa_administracao=taxa_administracao,
                 imposto_renda=imposto_renda,
                 valor_futuro=valor_futuro,
             )
 
-            # Renderizar o resultado da simulação
             return render(request, 'investimentos/simulacao_resultado.html', {
                 'form': form,
                 'valor_futuro': valor_futuro

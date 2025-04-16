@@ -1,11 +1,44 @@
 from django import forms
 
 class SimulacaoForm(forms.Form):
-    valor_investido = forms.DecimalField(label="Valor Investido", max_digits=10, decimal_places=2)
-    rentabilidade_anual = forms.DecimalField(label="Rentabilidade Anual (%)", max_digits=5, decimal_places=2, initial=13.25)
-    prazo_meses = forms.IntegerField(label="Prazo (meses)")
-    taxa_administracao = forms.DecimalField(label="Taxa de Administração (%)", max_digits=5, decimal_places=2, required=False, initial=0)
-    imposto_renda = forms.DecimalField(label="Imposto de Renda (%)", max_digits=5, decimal_places=2, required=False, initial=0)
+    valor_investido = forms.DecimalField(
+        label="Valor a Investir (R$)", max_digits=10, decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 1000.00'
+        })
+    )
+    percentual_cdi = forms.DecimalField(
+        label="% do CDI/Selic oferecido pelo investimento", max_digits=5, decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 102'
+        })
+    )
+    cdi_atual = forms.DecimalField(
+        label="CDI ou Selic atual (% ao ano)", max_digits=5, decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 13.65'
+        })
+    )
+    prazo_meses = forms.IntegerField(
+        label="Prazo da aplicação (em meses)",
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 12'
+        })
+    )
+    taxa_administracao = forms.DecimalField(
+        label="Taxa de Administração (% ao ano)", max_digits=5, decimal_places=2,
+        required=False, initial=0,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 1.0'
+        })
+    )
+    imposto_renda = forms.DecimalField(
+        label="Imposto de Renda (%)", max_digits=5, decimal_places=2,
+        required=False, initial=0,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 15'
+        })
+    )
 
 class CalcularInvestimentoNecessarioForm(forms.Form):
     valor_desejado = forms.DecimalField(label="Objetivo Financeiro", max_digits=10, decimal_places=2)

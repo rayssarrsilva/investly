@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'rest_framework_simplejwt',
     'drf_yasg', #documentação interativa
     'accounts',
+    'widget_tweaks',
 ]
 
 REST_FRAMEWORK = {
