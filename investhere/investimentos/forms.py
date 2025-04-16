@@ -8,7 +8,7 @@ class SimulacaoForm(forms.Form):
         })
     )
     percentual_cdi = forms.DecimalField(
-        label="% do CDI/Selic oferecido pelo investimento", max_digits=5, decimal_places=2,
+        label="% do CDI/Selic oferecido pelo banco escolhido sobre o investimento", max_digits=5, decimal_places=2,
         widget=forms.NumberInput(attrs={
             'placeholder': 'Ex: 102'
         })
@@ -32,19 +32,33 @@ class SimulacaoForm(forms.Form):
             'placeholder': 'Ex: 1.0'
         })
     )
-    imposto_renda = forms.DecimalField(
-        label="Imposto de Renda (%)", max_digits=5, decimal_places=2,
-        required=False, initial=0,
-        widget=forms.NumberInput(attrs={
-            'placeholder': 'Ex: 15'
-        })
-    )
 
 class CalcularInvestimentoNecessarioForm(forms.Form):
-    valor_desejado = forms.DecimalField(label="Objetivo Financeiro", max_digits=10, decimal_places=2)
-    rentabilidade_anual = forms.DecimalField(label="Rentabilidade Anual (%)", max_digits=5, decimal_places=2)
-    valor_maximo = forms.DecimalField(label="Aplicação Mensal", max_digits=10, decimal_places=2)
-
+    valor_desejado = forms.DecimalField(
+        label="Objetivo Financeiro", max_digits=10, decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 50000.00'
+        })
+    )
+    percentual_cdi = forms.DecimalField(
+        label="% do CDI/Selic oferecido pelo investimento", max_digits=5, decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 102'
+        })
+    )
+    cdi_atual = forms.DecimalField(
+        label="CDI ou Selic atual (% ao ano)", max_digits=5, decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 13.65'
+        })
+    )
+    valor_maximo = forms.DecimalField(
+        label="Aplicação Mensal", max_digits=10, decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'placeholder': 'Ex: 1000.00'
+        })
+    )
+    
 class RegistroForm(forms.Form):
     username = forms.CharField(
         label="Usuário",

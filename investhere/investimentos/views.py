@@ -87,7 +87,6 @@ def simulacao_investimento_view(request):
                 rentabilidade_anual=percentual_cdi,  # Armazenando % do CDI
                 prazo_meses=prazo_meses,
                 taxa_administracao=taxa_administracao,
-                imposto_renda=imposto_renda,
                 valor_futuro=valor_futuro,
             )
 
