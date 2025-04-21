@@ -192,10 +192,6 @@ def calcular_tempo_necessario(valor_desejado, rentabilidade_anual, valor_maximo)
         raise ValueError("Parâmetros inválidos para cálculo!")
 
 
-#Função para renderizar o template com as explicações dos cálculos
-def explicacao_calculo_view(request):
-    return render(request, 'investimentos/explicacao.html')
-
 # Classe para Logout
 class LogoutView(APIView):
     def post(self, request):
