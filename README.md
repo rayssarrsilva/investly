@@ -13,24 +13,10 @@ O Investly é uma plataforma web desenvolvida com Django e Django REST Framework
 
 🚀 Funcionalidades principais
 ✅ Simulação de Valor Futuro
--Calcule quanto seu dinheiro poderá render ao longo do tempo com base em:
-   
-   -Valor inicial investido
-   
-   -Rentabilidade anual (%)
-   
-   -Prazo (em meses)
-   
-   -Aportes mensais opcionais
-   
-   -Taxas (administração e IR)
+Esta simulação mostra quanto seu dinheiro pode render ao longo do tempo. Por exemplo, ao investir R$ 1000 com uma rentabilidade de 102% do CDI (e o CDI estando em 13% ao ano), o sistema calcula mês a mês quanto esse valor cresce usando juros compostos, ou seja, os rendimentos de cada mês são reinvestidos automaticamente. Após 12 meses, o valor estimado final seria de R$ 1132,75. Isso dá uma ideia realista de quanto seu investimento pode render com base nas condições atuais do mercado.
 
 ✅ Projeção de Tempo para Meta Financeira
--Informe o valor que deseja alcançar, e o sistema calcula:
-
--Quantos meses serão necessários com aportes mensais constantes
-
--Rentabilidade composta considerada
+Esta simulação mostra em quanto tempo você pode atingir um valor desejado aplicando um valor mensal. Por exemplo, se você quer juntar R$ 50.000 investindo R$ 1000 por mês com uma rentabilidade de 102% do CDI e o CDI atual sendo 13%, o sistema simula mês a mês o crescimento da sua aplicação. Mesmo com o rendimento mensal, você ainda levaria cerca de 21 meses e teria acumulado apenas R$ 23.463,32, ou seja, ainda não atingiria a meta. Isso mostra a importância da taxa de rendimento e do tempo para o crescimento dos seus investimentos.
 
 ✅ Histórico de Simulações
 
