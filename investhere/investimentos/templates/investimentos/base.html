@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-br">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>INVESTLY - Simulador de Investimentos</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+</head>
+<body class="bg-gray-900 text-white font-sans min-h-screen flex flex-col">
+
+  <!-- Header -->
+  <header class="bg-gray-800 text-center py-4 text-sm text-gray-400">
+    <div class="container mx-auto px-4 flex justify-between items-center">
+      <h1 class="text-2xl font-bold">INVESTLY</h1>
+      <nav>
+        <a href="{% url 'menu_principal' %}" class="text-white hover:underline mr-4">Início</a>
+        <a href="{% url 'historico_simulacoes' %}" class="text-white hover:underline mr-4">Histórico</a>
+        <a href="{% url 'logout' %}" class="text-white hover:underline">Sair</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Conteúdo principal -->
+  <main class="flex-grow container mx-auto px-4 py-8">
+    <div class="bg-gray-800 rounded-2xl shadow-lg p-6">
+      {% block content %}
+      <!-- Aqui entra o conteúdo específico de cada página -->
+      {% endblock %}
+    </div>
+  </main>
+
+  <!-- Rodapé -->
+  <footer class="bg-gray-800 text-center py-4 text-sm text-gray-400">
+    &copy; 2025 INVESTLY. Todos os direitos reservados.
+  </footer>
+
+</body>
+{% if messages %}
+  <div class="max-w-xl mx-auto mt-6 space-y-2">
+    {% for message in messages %}
+      <div class="
+        px-4 py-3 rounded-lg shadow 
+        {% if message.tags == 'error' %}
+          bg-red-600 text-white
+        {% elif message.tags == 'success' %}
+          bg-green-600 text-white
+        {% else %}
+          bg-blue-600 text-white
+        {% endif %}
+      ">
+        {{ message }}
+      </div>
+    {% endfor %}
+  </div>
+{% endif %}
+
+</html>
+
+

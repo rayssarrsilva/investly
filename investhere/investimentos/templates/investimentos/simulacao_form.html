@@ -1,91 +1,31 @@
+{% extends "investimentos/base.html" %}
 {% load widget_tweaks %}
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Simulação de Investimentos</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #1D2630; color: white; font-family: 'Roboto', sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 50px; background: #121B26; border-radius: 20px; margin-top: 120px; box-shadow: 0px 10px 20px rgba(255, 215, 0, 0.1); }
-        .btn-submit { background-color: #007BFF; color: white; font-weight: bold; padding: 12px; font-size: 18px; }
-        .btn-submit:hover { background-color: #0056b3; }
-        .navbar {
-            background-color: #121B26;
-            padding: 15px;
-        }
-        .navbar-brand {
-            color: #007BFF;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .nav-link {
-            color: white;
-            font-size: 18px;
-            margin-right: 15px;
-        }
-        .nav-link:hover {
-            color: #007BFF;
-        }
-        .container-menu {
-            max-width: 800px;
-            margin: auto;
-            padding: 50px;
-            background: #121B26;
-            border-radius: 20px;
-            margin-top: 50px;
-            text-align: center;
-            box-shadow: 0px 10px 20px rgba(255, 215, 0, 0.1);
-        }
-        .menu-item {
-            margin: 20px 0;
-            padding: 15px;
-            background: #1E2A36;
-            border-radius: 10px;
-            font-size: 20px;
-            transition: 0.3s;
-        }
-        .menu-item:hover {
-            background: #007BFF;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/menu_principal/">Investly</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/simulacao/">Simulação</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/calcular-investimento-necessario/">Cálculo de Investimento</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/historico/">Historico</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login/">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container">
-        <h2 class="text-center mb-4">Simulação de Investimentos</h2>
-        <div class="mb-4 text-light" style="font-size: 15px;">
-            <h5 class="text-info">Como funciona a simulação?</h5>
-            <p>
-                Esta simulação calcula o valor futuro de um investimento com base no <strong>percentual do CDI/Selic</strong> oferecido pelo banco, considerando também a 
-                <strong>taxa atual do CDI/Selic</strong>, o <strong>prazo da aplicação</strong>, possíveis <strong>taxas de administração</strong> e a <strong>alíquota de imposto de renda</strong>.
-            </p>
-            <p>
-                O sistema utiliza capitalização composta mensal para estimar o rendimento líquido mês a mês, proporcionando uma visão realista de quanto seu dinheiro pode render.
-            </p>
-            <p>
-                Ideal para comparar propostas de bancos e planejar seus investimentos com segurança.
-            </p>
-        </div>
-            <form method="POST">
-                {% csrf_token %}
-                {{ form.as_p }}
-                <button type="submit" class="btn btn-submit w-100">Calcular</button>
-            </form>            
+
+{% block content %}
+  <div class="max-w-xl mx-auto bg-gray-800 p-6 rounded-2xl shadow-xl">
+    <h2 class="text-2xl font-bold text-center text-white mb-6">Simulação de Investimentos</h2>
+
+    <div class="text-sm text-gray-300 bg-gray-700 p-4 rounded-lg shadow mb-6">
+      <strong class="text-blue-400">Como funciona a simulação?</strong><br>
+      Imagine que você investe R$ 1.000 por 12 meses com uma rentabilidade de 102% do CDI (com o CDI a 13%). O sistema calcula mês a mês como esse valor cresce,
+      considerando o reinvestimento dos lucros. O resultado é o valor estimado no fim do período, como R$ 1132,75. Assim, você pode comparar bancos
+      e definir se vale a pena investir ou buscar uma rentabilidade melhor.
     </div>
-</body>
-</html>
+
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+      {% for field in form %}
+        <div>
+          <label class="block text-gray-200 text-sm font-medium mb-1">{{ field.label }}</label>
+          {{ field|add_class:"w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+          {% if field.errors %}
+            <p class="text-red-400 text-xs mt-1">{{ field.errors.0 }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded shadow hover:shadow-md transition">
+        Calcular
+      </button>
+    </form>
+  </div>
+{% endblock %}

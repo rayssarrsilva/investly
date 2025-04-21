@@ -1,80 +1,36 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Calcular Investimento Necessário</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body { background-color: #1D2630; color: white; font-family: 'Roboto', sans-serif; }
-        .container { max-width: 600px; margin: auto; padding: 50px; background: #121B26; border-radius: 20px; margin-top: 120px; box-shadow: 0px 10px 20px rgba(255, 215, 0, 0); transition: box-shadow 0.3s ease-in-out; }
-        .container:hover { box-shadow: 0px 10px 20px rgba(255, 215, 0, 0.5); }
-        .btn-submit { background-color: #007BFF; color: white; font-weight: bold; padding: 12px; font-size: 18px; }
-        .btn-submit:hover { background-color: #0056b3; }
-        .navbar {
-            background-color: #121B26;
-            padding: 15px;
-        }
-        .navbar-brand {
-            color: #007BFF;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .nav-link {
-            color: white;
-            font-size: 18px;
-            margin-right: 15px;
-        }
-        .nav-link:hover {
-            color: #007BFF;
-        }
-        .container-menu {
-            max-width: 800px;
-            margin: auto;
-            padding: 50px;
-            background: #121B26;
-            border-radius: 20px;
-            margin-top: 50px;
-            text-align: center;
-            box-shadow: 0px 10px 20px rgba(255, 215, 0, 0.1);
-        }
-        .menu-item {
-            margin: 20px 0;
-            padding: 15px;
-            background: #1E2A36;
-            border-radius: 10px;
-            font-size: 20px;
-            transition: 0.3s;
-        }
-        .menu-item:hover {
-            background: #007BFF;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/menu_principal/">Investly</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/simulacao/">Simulação</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/calcular-investimento-necessario/">Cálculo de Investimento</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/historico/">Historico</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login/">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    <div class="container">
-        <h2 class="text-center mb-4">Cálculo do tempo de Acumulação</h2>
-        <p class="text-center"> Utilize este simulador para descobrir o tempo necessário para atingir seu objetivo financeiro. 
-            <br>Com base no objetivo financeiro, rentabilidade anual em porcentagem baseado na taxa selic atual e aportes mensais.</p>
-        <form method="POST">
-            {% csrf_token %}
-            {{ form.as_p }}
-            <button type="submit" class="btn btn-submit w-100">Calcular</button>
-        </form>
+{% extends "investimentos/base.html" %}
+{% load widget_tweaks %}
+
+{% block content %}
+  <div class="max-w-xl mx-auto bg-gray-800 p-6 rounded-2xl shadow-xl">
+    <h2 class="text-2xl font-bold text-center text-white mb-4">Cálculo do Tempo de Acumulação</h2>
+
+    <p class="text-center text-gray-300 text-sm mb-6">
+      Utilize este simulador para descobrir o tempo necessário para atingir seu objetivo financeiro.<br>
+      Com base no objetivo, rentabilidade anual (em %) e valor que será aplicado mensalmente.
+    </p>
+
+    <div class="text-sm text-gray-300 bg-gray-700 p-4 rounded-lg shadow mb-6">
+      <strong class="text-blue-400">Como essa simulação funciona?</strong><br>
+      Suponha que você queira juntar R$ 50.000 investindo R$ 1.000 por mês. O sistema simula mês a mês como seu dinheiro cresce
+      com base na taxa de juros informada. Ele mostra em quantos meses esse valor seria alcançado considerando a rentabilidade mensal.
+      Isso ajuda você a entender se a estratégia atual é suficiente ou se será necessário investir mais ou por mais tempo.
     </div>
-</body>
-</html>
+
+    <form method="POST" class="space-y-4">
+      {% csrf_token %}
+      {% for field in form %}
+        <div>
+          <label class="block text-gray-200 text-sm font-medium mb-1">{{ field.label }}</label>
+          {{ field|add_class:"w-full px-3 py-2 rounded bg-gray-700 text-white focus:outline-none focus:ring-2 focus:ring-blue-500" }}
+          {% if field.errors %}
+            <p class="text-red-400 text-xs mt-1">{{ field.errors.0 }}</p>
+          {% endif %}
+        </div>
+      {% endfor %}
+      <button type="submit" class="w-full bg-blue-600 hover:bg-blue-700 text-white text-sm font-semibold py-2 px-4 rounded shadow hover:shadow-md transition">
+        Calcular
+      </button>
+    </form>
+  </div>
+{% endblock %}

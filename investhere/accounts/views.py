@@ -39,5 +39,3 @@ def user_logout(request):
     messages.info(request, 'Você saiu da conta.')
     return redirect('login')
 
-def dashboard(request):
-    return render(request, 'investimentos/dashboard_view.html')

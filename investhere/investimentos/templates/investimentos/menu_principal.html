@@ -1,77 +1,17 @@
-<!DOCTYPE html>
-<html lang="pt-br">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Investly - Menu Principal</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.1/dist/css/bootstrap.min.css" rel="stylesheet">
-    <style>
-        body {
-            background-color: #1D2630;
-            font-family: 'Roboto', sans-serif;
-            color: white;
-        }
-        .navbar {
-            background-color: #121B26;
-            padding: 15px;
-        }
-        .navbar-brand {
-            color: #007BFF;
-            font-size: 24px;
-            font-weight: bold;
-        }
-        .nav-link {
-            color: white;
-            font-size: 18px;
-            margin-right: 15px;
-        }
-        .nav-link:hover {
-            color: #007BFF;
-        }
-        .container-menu {
-            max-width: 800px;
-            margin: auto;
-            padding: 50px;
-            background: #121B26;
-            border-radius: 20px;
-            margin-top: 50px;
-            text-align: center;
-            box-shadow: 0px 10px 20px rgba(255, 215, 0, 0.1);
-        }
-        .menu-item {
-            margin: 20px 0;
-            padding: 15px;
-            background: #1E2A36;
-            border-radius: 10px;
-            font-size: 20px;
-            transition: 0.3s;
-        }
-        .menu-item:hover {
-            background: #007BFF;
-            cursor: pointer;
-        }
-    </style>
-</head>
-<body>
-    <nav class="navbar navbar-expand-lg">
-        <div class="container-fluid">
-            <a class="navbar-brand" href="/menu_principal/">Investly</a>
-            <div class="collapse navbar-collapse">
-                <ul class="navbar-nav ms-auto">
-                    <li class="nav-item"><a class="nav-link" href="/simulacao/">Simulação de valor futuro</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/calcular-investimento-necessario/">Cálculo do tempo de Acumulação</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/historico/">Historico</a></li>
-                    <li class="nav-item"><a class="nav-link" href="/login/">Logout</a></li>
-                </ul>
-            </div>
-        </div>
-    </nav>
-    
-    <div class="container-menu">
-        <h2>Menu Principal</h2>
-        <p>Escolha uma das opções abaixo para gerenciar seus investimentos.</p>
-        <a href="/simulacao/" class="menu-item d-block text-white text-decoration-none">Simular Investimentos</a>
-        <a href="/calcular-investimento-necessario/" class="menu-item d-block text-white text-decoration-none">Cálculo do tempo de Acumulação</a>
+{% extends "investimentos/base.html" %}
+
+{% block content %}
+  <div class="text-center">
+    <h2 class="text-3xl font-bold mb-4 text-white">Menu Principal</h2>
+    <p class="mb-6 text-gray-300">Escolha uma das opções abaixo para gerenciar seus investimentos.</p>
+
+    <div class="space-y-4">
+      <a href="/simulacao/" class="block bg-gray-700 hover:bg-blue-600 transition rounded-xl py-3 px-6 text-lg text-white font-medium shadow-md">
+        Simular Investimentos
+      </a>
+      <a href="/calcular-investimento-necessario/" class="block bg-gray-700 hover:bg-blue-600 transition rounded-xl py-3 px-6 text-lg text-white font-medium shadow-md">
+        Cálculo do tempo de Acumulação
+      </a>
     </div>
-</body>
-</html>
+  </div>
+{% endblock %}

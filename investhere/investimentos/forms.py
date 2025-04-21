@@ -36,28 +36,21 @@ class SimulacaoForm(forms.Form):
 class CalcularInvestimentoNecessarioForm(forms.Form):
     valor_desejado = forms.DecimalField(
         label="Objetivo Financeiro", max_digits=10, decimal_places=2,
-        widget=forms.NumberInput(attrs={
-            'placeholder': 'Ex: 50000.00'
-        })
+        widget=forms.NumberInput(attrs={'placeholder': 'Ex: 50000.00'})
     )
-    percentual_cdi = forms.DecimalField(
+    percentual_cdi = forms.DecimalField(  # <--- Adicione este campo
         label="% do CDI/Selic oferecido pelo investimento", max_digits=5, decimal_places=2,
-        widget=forms.NumberInput(attrs={
-            'placeholder': 'Ex: 102'
-        })
+        widget=forms.NumberInput(attrs={'placeholder': 'Ex: 102'})
     )
     cdi_atual = forms.DecimalField(
         label="CDI ou Selic atual (% ao ano)", max_digits=5, decimal_places=2,
-        widget=forms.NumberInput(attrs={
-            'placeholder': 'Ex: 13.65'
-        })
+        widget=forms.NumberInput(attrs={'placeholder': 'Ex: 13.65'})
     )
     valor_maximo = forms.DecimalField(
         label="Aplicação Mensal", max_digits=10, decimal_places=2,
-        widget=forms.NumberInput(attrs={
-            'placeholder': 'Ex: 1000.00'
-        })
+        widget=forms.NumberInput(attrs={'placeholder': 'Ex: 1000.00'})
     )
+
     
 class RegistroForm(forms.Form):
     username = forms.CharField(
