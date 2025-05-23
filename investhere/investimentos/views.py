@@ -144,7 +144,6 @@ def calcular_investimento_necessario_view(request):
         valor_maximo = cd.get('valor_maximo', 0) or 0
 
         try:
-            # Corrigido: considera o percentual do CDI para calcular a rentabilidade real
             rentabilidade_anual = (percentual_cdi / 100) * cdi_atual
             tempo_necessario = calcular_tempo_necessario(valor_desejado, rentabilidade_anual, valor_maximo)
             valor_total = calcular_valor_futuro(0, percentual_cdi, cdi_atual, tempo_necessario, valor_maximo)

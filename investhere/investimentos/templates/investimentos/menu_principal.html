@@ -1,16 +1,45 @@
 {% extends "investimentos/base.html" %}
 
 {% block content %}
-  <div class="text-center">
-    <h2 class="text-3xl font-bold mb-4 text-white">Menu Principal</h2>
-    <p class="mb-6 text-gray-300">Escolha uma das opções abaixo para gerenciar seus investimentos.</p>
+  <div class="max-w-3xl mx-auto mt-10 p-20 rounded-2xl bg-gradient-to-br from-gray-800 via-gray-900 to-black shadow-2xl border border-gray-700">
+    <h1 class="text-4xl font-extrabold text-white text-center mb-8 tracking-wide">
+      Painel de Controle
+    </h1>
+    <p class="text-center text-gray-400 text-lg mb-10">
+      Bem-vindo ao <span class="text-blue-400 font-semibold">Investly</span>. Escolha abaixo o que deseja fazer:
+    </p>
 
-    <div class="space-y-4">
-      <a href="/simulacao/" class="block bg-gray-700 hover:bg-blue-600 transition rounded-xl py-3 px-6 text-lg text-white font-medium shadow-md">
-        Simular Investimentos
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+      <a href="/simulacao/" class="group relative block rounded-xl bg-gray-800 p-6 transition hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-blue-500">
+        <div class="flex items-center space-x-4">
+          <div class="bg-blue-600 rounded-full p-3">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M3 17l6-6 4 4 8-8" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-white text-xl font-semibold group-hover:text-blue-400">
+              Simular Investimentos
+            </h3>
+            <p class="text-gray-400 text-sm mt-1">Projete rentabilidade com base em dados reais</p>
+          </div>
+        </div>
       </a>
-      <a href="/calcular-investimento-necessario/" class="block bg-gray-700 hover:bg-blue-600 transition rounded-xl py-3 px-6 text-lg text-white font-medium shadow-md">
-        Cálculo do tempo de Acumulação
+
+      <a href="/calcular-investimento-necessario/" class="group relative block rounded-xl bg-gray-800 p-6 transition hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-blue-500">
+        <div class="flex items-center space-x-4">
+          <div class="bg-blue-600 rounded-full p-3">
+            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+              <path d="M12 8v4l3 3" />
+            </svg>
+          </div>
+          <div>
+            <h3 class="text-white text-xl font-semibold group-hover:text-blue-400">
+              Cálculo do Tempo
+            </h3>
+            <p class="text-gray-400 text-sm mt-1">Saiba quanto tempo é necessário para atingir sua meta</p>
+          </div>
+        </div>
       </a>
     </div>
   </div>

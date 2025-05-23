@@ -11,6 +11,9 @@ https://docs.djangoproject.com/en/5.1/ref/settings/
 """
 
 from pathlib import Path
+import os
+import dj_database_url
+
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -25,7 +28,7 @@ SECRET_KEY = 'django-insecure-xc2a98)6^hceo!acip-o6d*ck$&@&hxwks#000$4a-h-2ux@^6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
 
 
 # Application definition
@@ -40,7 +43,7 @@ INSTALLED_APPS = [
     'investimentos',
     'rest_framework',
     'rest_framework_simplejwt',
-    'drf_yasg', #documentação interativa
+    'drf_yasg', 
     'accounts',
     'widget_tweaks',
 ]
@@ -139,3 +142,7 @@ DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 AUTHENTICATION_BACKENDS = [
     'django.contrib.auth.backends.ModelBackend',
 ]
+
+
+DATABASES['default'] = dj_database_url.config(default=os.getenv("DATABASE_URL"))
+STATIC_ROOT = os.path.join(BASE_DIR, 'staticfiles')
