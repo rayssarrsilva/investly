@@ -28,7 +28,7 @@ SECRET_KEY = 'django-insecure-xc2a98)6^hceo!acip-o6d*ck$&@&hxwks#000$4a-h-2ux@^6
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*']
+ALLOWED_HOSTS = ['127.0.0.1', 'localhost', '*', 'investly.onrender.com']
 
 
 # Application definition
@@ -56,6 +56,7 @@ REST_FRAMEWORK = {
 
 
 MIDDLEWARE = [
+    'whitenoise.middleware.WhiteNoiseMiddleware',
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',

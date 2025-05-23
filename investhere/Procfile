@@ -1,1 +1,1 @@
-web: gunicorn investhere.wsgi:application
+web: gunicorn investhere.wsgi
