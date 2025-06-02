@@ -16,7 +16,7 @@ class SimulacaoForm(forms.Form):
     cdi_atual = forms.DecimalField(
         label="CDI ou Selic atual (% ao ano)", max_digits=5, decimal_places=2,
         widget=forms.NumberInput(attrs={
-            'placeholder': 'Ex: 13.65'
+            'placeholder': 'Ex: 14.65'
         })
     )
     prazo_meses = forms.IntegerField(
@@ -44,7 +44,7 @@ class CalcularInvestimentoNecessarioForm(forms.Form):
     )
     cdi_atual = forms.DecimalField(
         label="CDI ou Selic atual (% ao ano)", max_digits=5, decimal_places=2,
-        widget=forms.NumberInput(attrs={'placeholder': 'Ex: 13.65'})
+        widget=forms.NumberInput(attrs={'placeholder': 'Ex: 14.65'})
     )
     valor_maximo = forms.DecimalField(
         label="Aplicação Mensal", max_digits=10, decimal_places=2,

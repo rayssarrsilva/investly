@@ -50,17 +50,15 @@ def calcular_rentabilidade_mensal(percentual_cdi, cdi_atual, taxa_administracao=
 
 
 def calcular_valor_futuro(valor_investido, percentual_cdi, cdi_atual, prazo_meses, aporte_mensal=0, taxa_administracao=0, imposto_renda=0):
-    # Converte os valores para float para evitar conflitos com Decimal
-    valor_futuro = float(valor_investido)
+    capital = float(valor_investido)
     aporte_mensal = float(aporte_mensal)
-
-    rentabilidade_mensal = calcular_rentabilidade_mensal(percentual_cdi, cdi_atual, taxa_administracao, imposto_renda)
+    r = calcular_rentabilidade_mensal(percentual_cdi, cdi_atual, taxa_administracao, imposto_renda)
 
     for _ in range(prazo_meses):
-        valor_futuro += valor_futuro * rentabilidade_mensal
-        valor_futuro += aporte_mensal
+        capital += capital * r  # juros sobre capital
+        capital += aporte_mensal  # novo aporte
 
-    return round(valor_futuro, 2)
+    return round(capital, 2)
 
 
 # View para Simulação de Investimento PRINCIPAL
@@ -144,8 +142,14 @@ def calcular_investimento_necessario_view(request):
         valor_maximo = cd.get('valor_maximo', 0) or 0
 
         try:
-            rentabilidade_anual = (percentual_cdi / 100) * cdi_atual
-            tempo_necessario = calcular_tempo_necessario(valor_desejado, rentabilidade_anual, valor_maximo)
+            tempo_necessario = calcular_tempo_necessario(
+                valor_desejado,
+                percentual_cdi,
+                cdi_atual,
+                valor_maximo,
+                cd.get('taxa_administracao', 0) or 0,
+                cd.get('imposto_renda', 0) or 0
+            )
             valor_total = calcular_valor_futuro(0, percentual_cdi, cdi_atual, tempo_necessario, valor_maximo)
         except ValueError as e:
             messages.error(request, str(e))
@@ -171,24 +175,29 @@ def calcular_investimento_necessario_view(request):
     return render(request, 'investimentos/calcular_form.html', {'form': form})
 
 # Função de cálculo do tempo necessário para atingir o valor desejado usado na função calcular_investimento_necessario_view (Formulario)
-def calcular_tempo_necessario(valor_desejado, rentabilidade_anual, valor_maximo):
+def calcular_tempo_necessario(valor_desejado, percentual_cdi, cdi_atual, valor_maximo, taxa_administracao=0, imposto_renda=0):
+    if percentual_cdi <= 0 or cdi_atual <= 0:
+        raise ValueError("CDI atual e percentual devem ser maiores que zero.")
+
     valor_desejado = float(valor_desejado)
-    rentabilidade_anual = float(rentabilidade_anual)
     valor_maximo = float(valor_maximo)
 
     if valor_maximo <= 0:
         raise ValueError("O valor máximo deve ser maior que zero.")
 
-    rentabilidade_mensal = rentabilidade_anual / 12 / 100
+    # Calcula rentabilidade mensal líquida
+    rentabilidade_mensal = calcular_rentabilidade_mensal(percentual_cdi, cdi_atual, taxa_administracao, imposto_renda)
 
-    if rentabilidade_mensal == 0:
-        raise ValueError("A rentabilidade mensal não pode ser zero.")
+    if rentabilidade_mensal <= 0:
+        raise ValueError("A rentabilidade mensal deve ser maior que zero.")
 
     try:
+        # Fórmula de tempo com aportes compostos: n = log((FV * r / PMT) + 1) / log(1 + r)
         meses_necessarios = math.log((valor_desejado * rentabilidade_mensal / valor_maximo) + 1) / math.log(1 + rentabilidade_mensal)
         return math.ceil(meses_necessarios)
-    except ValueError:
+    except (ValueError, ZeroDivisionError):
         raise ValueError("Parâmetros inválidos para cálculo!")
+
 
 
 # Classe para Logout
