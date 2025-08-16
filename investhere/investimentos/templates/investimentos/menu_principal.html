@@ -5,13 +5,13 @@
   :root{
     --brand:#0ea5e9; --brand-2:#38bdf8; --line:rgba(148,163,184,.22);
   }
-  /* Fundo premium (igual login/registro) */
   .surface-dark{
     background:
       radial-gradient(1000px 600px at 10% 15%, rgba(56,189,248,.15), transparent 60%),
       radial-gradient(800px 480px at 85% 20%, rgba(14,165,233,.12), transparent 60%),
       linear-gradient(145deg, #0b1220, #0c1a2b 55%, #0b1324);
     color:#e6effa;
+    min-height: calc(100vh - 56px);
   }
   .h-title{
     font-weight:800; letter-spacing:.2px;
@@ -20,23 +20,17 @@
   }
   .muted{ color:#c8d5e8; }
 
-  /* Cartões/tiles de ação */
+  /* Tiles (corrigido clique) */
   .tile{
+    position:relative; z-index:1; pointer-events:auto;
     border:1px solid rgba(56,189,248,.18);
     border-radius:16px;
     background:#0f172a;
     box-shadow:0 18px 40px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.03) inset;
     transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
-    text-decoration:none;
-    color:#e6effa;
+    text-decoration:none; color:#e6effa; overflow:hidden;
   }
-  .tile:hover{
-    transform: translateY(-2px);
-    box-shadow:0 22px 46px rgba(14,165,233,.24);
-    border-color: rgba(56,189,248,.35);
-    text-decoration:none;
-    color:#e6effa;
-  }
+  .tile:hover{ transform: translateY(-2px); box-shadow:0 22px 46px rgba(14,165,233,.24); border-color: rgba(56,189,248,.35); color:#e6effa; }
   .tile .icon{
     width:46px; height:46px; border-radius:12px;
     background:linear-gradient(180deg, var(--brand-2), var(--brand));
@@ -48,14 +42,22 @@
     display:grid; place-items:center; color:#bfe9ff;
   }
 
-  /* Cards de métrica rápidos */
-  .stat{
+  /* Seção neutra (sem números) */
+  .panel{
     border:1px solid rgba(56,189,248,.18);
-    border-radius:16px; padding:16px; background:#0f172a;
+    border-radius:16px; padding:20px; background:#0f172a;
   }
-  .stat .label{ color:#93a9bd; }
-  .stat .value{ font-size:clamp(20px,3vw,28px); font-weight:800; }
   .divider{ height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent); }
+
+  /* Botões “chip” */
+  .chip{
+    display:inline-flex; align-items:center; gap:8px;
+    background: rgba(56,189,248,.12);
+    color:#bfe9ff; border:1px solid rgba(56,189,248,.3);
+    padding:8px 12px; border-radius:999px; font-weight:600; font-size:14px;
+    text-decoration:none;
+  }
+  .chip:hover{ color:#e6f7ff; border-color: rgba(56,189,248,.55); }
 </style>
 
 <section class="surface-dark py-5">
@@ -67,15 +69,15 @@
       <p class="muted m-0">Bem-vindo ao <span class="fw-bold" style="color:#7dd3fc">Investly</span>. Escolha abaixo o que deseja fazer.</p>
     </div>
 
-    <!-- Ações principais -->
+    <!-- Ações principais (duas simulações reais) -->
     <div class="row g-3 mt-1">
       <div class="col-md-6">
-        <a href="/simulacao/" class="tile d-block p-4 h-100">
+        <a href="/simulacao/" class="tile d-block p-4 h-100" role="button" aria-label="Simular Investimentos">
           <div class="d-flex gap-3 align-items-start">
             <div class="icon"><i class="bi bi-graph-up-arrow"></i></div>
             <div class="flex-grow-1">
               <h3 class="h5 fw-bold mb-1">Simular Investimentos</h3>
-              <p class="muted mb-0">Projete rentabilidade com base em dados reais e compare cenários.</p>
+              <p class="muted mb-0">Monte cenários, compare aportes e taxas para avaliar rentabilidade.</p>
             </div>
             <div class="arrow ms-auto"><i class="bi bi-arrow-right"></i></div>
           </div>
@@ -83,12 +85,12 @@
       </div>
 
       <div class="col-md-6">
-        <a href="/calcular-investimento-necessario/" class="tile d-block p-4 h-100">
+        <a href="/calcular-investimento-necessario/" class="tile d-block p-4 h-100" role="button" aria-label="Cálculo do Tempo">
           <div class="d-flex gap-3 align-items-start">
             <div class="icon"><i class="bi bi-hourglass-split"></i></div>
             <div class="flex-grow-1">
-              <h3 class="h5 fw-bold mb-1">Cálculo do Tempo</h3>
-              <p class="muted mb-0">Descubra quanto tempo é necessário para atingir sua meta financeira.</p>
+              <h3 class="h5 fw-bold mb-1">Tempo até a Meta</h3>
+              <p class="muted mb-0">Descubra em quanto tempo você alcança o objetivo com os parâmetros atuais.</p>
             </div>
             <div class="arrow ms-auto"><i class="bi bi-arrow-right"></i></div>
           </div>
@@ -96,36 +98,20 @@
       </div>
     </div>
 
-    <!-- Métricas rápidas (opcional) -->
+    <!-- Estado vazio/atalhos úteis (sem números falsos) -->
     <div class="divider my-4"></div>
-    <div class="row g-3">
-      <div class="col-6 col-md-3">
-        <div class="stat">
-          <div class="label">Patrimônio</div>
-          <div class="value">R$ 254.320</div>
-          <div class="text-success small">+2.4% hoje</div>
-        </div>
+    <div class="panel">
+      <div class="d-flex flex-wrap align-items-center gap-2 mb-3">
+        <span class="chip"><i class="bi bi-stars"></i> Comece aqui</span>
       </div>
-      <div class="col-6 col-md-3">
-        <div class="stat">
-          <div class="label">Ativos</div>
-          <div class="value">55</div>
-          <div class="muted small">Ações • RF • Cripto</div>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat">
-          <div class="label">Aportes (mês)</div>
-          <div class="value">R$ 3.500</div>
-          <div class="muted small">meta: R$ 4.000</div>
-        </div>
-      </div>
-      <div class="col-6 col-md-3">
-        <div class="stat">
-          <div class="label">Rentab. (mês)</div>
-          <div class="value">+1.8%</div>
-          <div class="muted small">YTD: +7.4%</div>
-        </div>
+      <p class="muted mb-3">
+        Você ainda não possui simulações salvas. Inicie pela opção acima e, quando houver histórico,
+        ele aparecerá aqui para acesso rápido.
+      </p>
+      <div class="d-flex flex-wrap gap-2">
+        <a class="chip" href="#" onclick="return false;"><i class="bi bi-play-circle"></i> Ver demonstração</a>
+        <a class="chip" href="https://github.com/rayssarrsilva/investly" onclick="return false;"><i class="bi bi-file-text"></i> Documentação</a>
+        <a class="chip" href="#" onclick="return false;"><i class="bi bi-life-preserver"></i> Suporte</a>
       </div>
     </div>
 
