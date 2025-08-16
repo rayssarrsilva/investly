@@ -1,68 +1,139 @@
 {% extends "investimentos/base.html" %}
 
 {% block content %}
-<section class="surface-dark py-5">
+<style>
+  :root{
+    --brand:#0ea5e9; --brand-2:#38bdf8; --ink:#e6effa;
+    --line:rgba(148,163,184,.22); --bg:#0b1220;
+  }
 
-  <div class="container-xxl">
-    <!-- HERO + AÇÕES (sem container fechado) -->
-    <div class="grid-split align-items-start fade-in">
+  /* Fundo premium consistente com login/registro */
+  .stage{
+    min-height: calc(100vh - 120px);
+    background:
+      radial-gradient(1000px 600px at 12% 12%, rgba(56,189,248,.14), transparent 60%),
+      radial-gradient(900px 520px at 85% 18%, rgba(14,165,233,.12), transparent 60%),
+      linear-gradient(145deg, #0b1220, #0c1a2b 55%, #0b1324);
+    color: var(--ink);
+    display: grid;
+    grid-template-columns: 1.1fr 1fr;
+    gap: clamp(28px, 5vw, 56px);
+    align-items: center;
+    padding: clamp(28px, 4vw, 48px) clamp(22px, 6vw, 72px);
+  }
+  @media (max-width: 992px){
+    .stage{ grid-template-columns: 1fr; padding-top: 64px; }
+  }
 
-      <!-- HERO (esquerda) -->
-      <div class="pe-lg-5">
-        <span class="badge-soft mb-3"><i class="bi bi-shield-check"></i> Plataforma para investidores</span>
-        <h1 class="title-xl mb-2">Investly</h1>
-        <p class="muted mb-4">
-          Monte cenários de investimento e estime o tempo até uma meta financeira com uma UI limpa e focada em decisão.
-        </p>
+  /* HERO (esquerda) */
+  .badge{
+    display:inline-flex; gap:8px; align-items:center;
+    background: rgba(56,189,248,.12);
+    border:1px solid rgba(56,189,248,.30);
+    color:#bfe9ff; padding:8px 12px; border-radius:999px;
+    font-weight:600; font-size:14px;
+  }
+  .title{
+    margin:18px 0 10px; font-weight:800; letter-spacing:.2px;
+    font-size: clamp(32px, 5.4vw, 56px); line-height:1.05;
+    background: linear-gradient(180deg, #f0f9ff, #bfe9ff 60%, #7dd3fc);
+    -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
+  }
+  .lead{ color:#c8d5e8; max-width:62ch; font-size:clamp(15px,1.2vw,18px); }
 
-        <!-- Atalhos rápidos (sem dados falsos) -->
-        <div class="d-flex flex-wrap gap-2">
-          <a href="{% url 'historico_simulacoes' %}" class="btn-ghost">Histórico</a>
-          <a href="{% url 'simulacao-investimentos' %}" class="btn-ghost">Nova simulação</a>
-          <a href="{% url 'calcular-investimento-necessario' %}" class="btn-ghost">Tempo até a meta</a>
-        </div>
+  .quick{
+    display:flex; flex-wrap:wrap; gap:10px; margin-top:18px;
+  }
+  .chip{
+    padding:8px 12px; border-radius:999px;
+    border:1px dashed var(--line); color:#bcd0e7; text-decoration:none;
+  }
+  .chip:hover{ border-color:#7dd3fc; color:#e6f3ff; }
 
-        <div class="divider"></div>
-        <p class="muted small m-0">
-          Quando você fizer simulações, poderá acessá-las pelo <strong>Histórico</strong>.
-        </p>
-      </div>
+  /* CARDS (direita) */
+  .stack{ display:flex; flex-direction:column; gap:18px; }
+  .card{
+    border:1px solid rgba(56,189,248,.18);
+    border-radius:18px;
+    background:#0f172a;
+    box-shadow:0 18px 40px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.03) inset;
+    padding:18px; text-decoration:none; color: var(--ink);
+    transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+  }
+  .card:hover{
+    transform: translateY(-2px);
+    border-color: rgba(56,189,248,.36);
+    box-shadow:0 22px 46px rgba(14,165,233,.24);
+    color: var(--ink);
+  }
+  .thumb{
+    width:44px;height:44px;border-radius:12px;margin-right:14px;
+    background: linear-gradient(180deg, var(--brand-2), var(--brand));
+    display:grid; place-items:center; color:#052230; font-weight:800;
+  }
+  .card h3{ margin:0 0 4px; font-weight:800; font-size:18px; }
+  .muted{ color:#9fb3c8; }
 
-      <!-- RAIL DE AÇÕES (direita) -->
-      <div class="d-flex flex-column gap-3">
+  /* Link setinha */
+  .arrow{
+    width:36px;height:36px;border-radius:10px;margin-left:auto;
+    background: rgba(56,189,248,.12);
+    display:grid; place-items:center; color:#bfe9ff;
+  }
 
-        <!-- Simulação de Investimentos -->
-        <a href="{% url 'simulacao-investimentos' %}" class="tile">
-          <div class="d-flex gap-3">
-            <div class="icon"><i class="bi bi-graph-up-arrow"></i></div>
-            <div class="flex-grow-1">
-              <div class="d-flex justify-content-between">
-                <h3 class="title-lg mb-1" style="font-size:20px;">Simular Investimentos</h3>
-                <span class="pill d-none d-md-inline"><i class="bi bi-lightning-charge"></i> Rápido</span>
-              </div>
-              <p class="muted mb-0">
-                Compare aportes e rentabilidades para enxergar o futuro do seu capital.
-              </p>
-            </div>
-          </div>
-        </a>
+  /* Seção “Acesso rápido / Histórico” */
+  .hint{
+    grid-column: 1 / -1;
+    margin-top: 10px; color:#9fb3c8; font-size:14px;
+  }
+</style>
 
-        <!-- Tempo até a Meta -->
-        <a href="{% url 'calcular-investimento-necessario' %}" class="tile">
-          <div class="d-flex gap-3">
-            <div class="icon"><i class="bi bi-hourglass-split"></i></div>
-            <div class="flex-grow-1">
-              <h3 class="title-lg mb-1" style="font-size:20px;">Tempo até a Meta</h3>
-              <p class="muted mb-0">
-                Descubra em quantos meses atinge um valor-alvo com seus aportes mensais.
-              </p>
-            </div>
-          </div>
-        </a>
+<section class="stage">
+  <!-- HERO -->
+  <div>
+    <span class="badge">Plataforma para investidores</span>
+    <h1 class="title">Investly</h1>
+    <p class="lead">
+      Monte cenários de investimento e estime o tempo até uma meta financeira com uma UI limpa, rápida e focada em decisão — sem dados inventados.
+    </p>
 
-      </div>
+    <div class="quick" aria-label="Acesso rápido">
+      <a class="chip" href="{% url 'historico_simulacoes' %}">Histórico</a>
+      <a class="chip" href="{% url 'simulacao-investimentos' %}">Nova simulação</a>
+      <a class="chip" href="{% url 'calcular-investimento-necessario' %}">Tempo até a meta</a>
     </div>
   </div>
 
+  <!-- AÇÕES -->
+  <div class="stack">
+    <!-- Simular Investimentos -->
+    <a class="card" href="{% url 'simulacao-investimentos' %}">
+      <div style="display:flex; align-items:flex-start;">
+        <div class="thumb">S</div>
+        <div>
+          <h3>Simular Investimentos</h3>
+          <p class="muted">Compare aportes e rentabilidades para enxergar o futuro do seu capital.</p>
+        </div>
+        <div class="arrow"><i class="bi bi-arrow-right"></i></div>
+      </div>
+    </a>
+
+    <!-- Tempo até a Meta -->
+    <a class="card" href="{% url 'calcular-investimento-necessario' %}">
+      <div style="display:flex; align-items:flex-start;">
+        <div class="thumb">T</div>
+        <div>
+          <h3>Tempo até a Meta</h3>
+          <p class="muted">Descubra em quantos meses atinge um valor-alvo com seus aportes mensais.</p>
+        </div>
+        <div class="arrow"><i class="bi bi-arrow-right"></i></div>
+      </div>
+    </a>
+  </div>
+
+  <!-- Dica/estado vazio do histórico -->
+  <p class="hint">
+    Quando você fizer simulações, poderá acessá-las pelo <a href="{% url 'historico_simulacoes' %}" class="chip" style="border-style:solid;">Histórico</a>.
+  </p>
 </section>
 {% endblock %}
