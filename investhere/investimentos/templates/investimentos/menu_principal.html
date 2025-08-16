@@ -1,46 +1,134 @@
 {% extends "investimentos/base.html" %}
 
 {% block content %}
-  <div class="w-full max-w-4xl mx-auto mt-10 px-4 py-8 sm:px-6 md:px-10 lg:px-20 rounded-2xl bg-gradient-to-br from-gray-800 via-gray-900 to-black shadow-2xl border border-gray-700">
-    <h1 class="text-3xl sm:text-4xl font-extrabold text-white text-center mb-6 sm:mb-8 tracking-wide">
-      Painel de Controle
-    </h1>
-    <p class="text-center text-gray-400 text-base sm:text-lg mb-8 sm:mb-10">
-      Bem-vindo ao <span class="text-blue-400 font-semibold">Investly</span>. Escolha abaixo o que deseja fazer:
-    </p>
+<style>
+  :root{
+    --brand:#0ea5e9; --brand-2:#38bdf8; --line:rgba(148,163,184,.22);
+  }
+  /* Fundo premium (igual login/registro) */
+  .surface-dark{
+    background:
+      radial-gradient(1000px 600px at 10% 15%, rgba(56,189,248,.15), transparent 60%),
+      radial-gradient(800px 480px at 85% 20%, rgba(14,165,233,.12), transparent 60%),
+      linear-gradient(145deg, #0b1220, #0c1a2b 55%, #0b1324);
+    color:#e6effa;
+  }
+  .h-title{
+    font-weight:800; letter-spacing:.2px;
+    background:linear-gradient(180deg,#f0f9ff,#bfe9ff 60%,#7dd3fc);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .muted{ color:#c8d5e8; }
 
-    <div class="grid grid-cols-1 sm:grid-cols-2 gap-6">
-      <a href="/simulacao/" class="group block rounded-xl bg-gray-800 p-5 sm:p-6 transition hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-blue-500">
-        <div class="flex items-start sm:items-center space-x-4">
-          <div class="bg-blue-600 rounded-full p-3">
-            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M3 17l6-6 4 4 8-8" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-white text-lg sm:text-xl font-semibold group-hover:text-blue-400">
-              Simular Investimentos
-            </h3>
-            <p class="text-gray-400 text-sm mt-1">Projete rentabilidade com base em dados reais</p>
-          </div>
-        </div>
-      </a>
+  /* Cartões/tiles de ação */
+  .tile{
+    border:1px solid rgba(56,189,248,.18);
+    border-radius:16px;
+    background:#0f172a;
+    box-shadow:0 18px 40px rgba(0,0,0,.35), 0 1px 0 rgba(255,255,255,.03) inset;
+    transition: transform .15s ease, box-shadow .2s ease, border-color .2s ease;
+    text-decoration:none;
+    color:#e6effa;
+  }
+  .tile:hover{
+    transform: translateY(-2px);
+    box-shadow:0 22px 46px rgba(14,165,233,.24);
+    border-color: rgba(56,189,248,.35);
+    text-decoration:none;
+    color:#e6effa;
+  }
+  .tile .icon{
+    width:46px; height:46px; border-radius:12px;
+    background:linear-gradient(180deg, var(--brand-2), var(--brand));
+    display:grid; place-items:center; color:#052230; font-size:22px; font-weight:800;
+  }
+  .tile .arrow{
+    width:36px;height:36px;border-radius:10px;
+    background: rgba(56,189,248,.12);
+    display:grid; place-items:center; color:#bfe9ff;
+  }
 
-      <a href="/calcular-investimento-necessario/" class="group block rounded-xl bg-gray-800 p-5 sm:p-6 transition hover:scale-105 hover:shadow-xl hover:ring-2 hover:ring-blue-500">
-        <div class="flex items-start sm:items-center space-x-4">
-          <div class="bg-blue-600 rounded-full p-3">
-            <svg class="h-6 w-6 text-white" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-              <path d="M12 8v4l3 3" />
-            </svg>
-          </div>
-          <div>
-            <h3 class="text-white text-lg sm:text-xl font-semibold group-hover:text-blue-400">
-              Cálculo do Tempo
-            </h3>
-            <p class="text-gray-400 text-sm mt-1">Saiba quanto tempo é necessário para atingir sua meta</p>
-          </div>
-        </div>
-      </a>
+  /* Cards de métrica rápidos */
+  .stat{
+    border:1px solid rgba(56,189,248,.18);
+    border-radius:16px; padding:16px; background:#0f172a;
+  }
+  .stat .label{ color:#93a9bd; }
+  .stat .value{ font-size:clamp(20px,3vw,28px); font-weight:800; }
+  .divider{ height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent); }
+</style>
+
+<section class="surface-dark py-5">
+  <div class="container-xxl">
+
+    <!-- Cabeçalho -->
+    <div class="mb-4">
+      <h1 class="h-title mb-2">Painel de Controle</h1>
+      <p class="muted m-0">Bem-vindo ao <span class="fw-bold" style="color:#7dd3fc">Investly</span>. Escolha abaixo o que deseja fazer.</p>
     </div>
+
+    <!-- Ações principais -->
+    <div class="row g-3 mt-1">
+      <div class="col-md-6">
+        <a href="/simulacao/" class="tile d-block p-4 h-100">
+          <div class="d-flex gap-3 align-items-start">
+            <div class="icon"><i class="bi bi-graph-up-arrow"></i></div>
+            <div class="flex-grow-1">
+              <h3 class="h5 fw-bold mb-1">Simular Investimentos</h3>
+              <p class="muted mb-0">Projete rentabilidade com base em dados reais e compare cenários.</p>
+            </div>
+            <div class="arrow ms-auto"><i class="bi bi-arrow-right"></i></div>
+          </div>
+        </a>
+      </div>
+
+      <div class="col-md-6">
+        <a href="/calcular-investimento-necessario/" class="tile d-block p-4 h-100">
+          <div class="d-flex gap-3 align-items-start">
+            <div class="icon"><i class="bi bi-hourglass-split"></i></div>
+            <div class="flex-grow-1">
+              <h3 class="h5 fw-bold mb-1">Cálculo do Tempo</h3>
+              <p class="muted mb-0">Descubra quanto tempo é necessário para atingir sua meta financeira.</p>
+            </div>
+            <div class="arrow ms-auto"><i class="bi bi-arrow-right"></i></div>
+          </div>
+        </a>
+      </div>
+    </div>
+
+    <!-- Métricas rápidas (opcional) -->
+    <div class="divider my-4"></div>
+    <div class="row g-3">
+      <div class="col-6 col-md-3">
+        <div class="stat">
+          <div class="label">Patrimônio</div>
+          <div class="value">R$ 254.320</div>
+          <div class="text-success small">+2.4% hoje</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat">
+          <div class="label">Ativos</div>
+          <div class="value">55</div>
+          <div class="muted small">Ações • RF • Cripto</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat">
+          <div class="label">Aportes (mês)</div>
+          <div class="value">R$ 3.500</div>
+          <div class="muted small">meta: R$ 4.000</div>
+        </div>
+      </div>
+      <div class="col-6 col-md-3">
+        <div class="stat">
+          <div class="label">Rentab. (mês)</div>
+          <div class="value">+1.8%</div>
+          <div class="muted small">YTD: +7.4%</div>
+        </div>
+      </div>
+    </div>
+
   </div>
+</section>
 {% endblock %}
