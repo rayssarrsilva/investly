@@ -11,6 +11,27 @@
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
 
   <style>
+        /* Garante texto branco SEMPRE */
+    .form-control {
+    color: #fff !important;         /* cor fixa do texto */
+    -webkit-text-fill-color: #fff !important; /* Chrome/Edge autofill */
+    caret-color: #fff;              /* cursor branco */
+    }
+
+    /* Corrige fundo do autofill */
+    .form-control:-webkit-autofill,
+    .form-control:-webkit-autofill:focus,
+    .form-control:-webkit-autofill:hover {
+    -webkit-text-fill-color: #fff !important;
+    box-shadow: 0 0 0 1000px rgba(255,255,255,.02) inset !important; /* mantém dark */
+    border: 1px solid rgba(148,163,184,.28);
+    }
+        /* Firefox */
+    input.form-control:autofill {
+    background: rgba(255,255,255,.02) !important;
+    color: #fff !important;
+    }
+
     :root{
       --brand:#0ea5e9;
       --brand-2:#38bdf8;
