@@ -1,95 +1,133 @@
 {% extends "investimentos/base.html" %}
 
 {% block content %}
-  <h2 class="text-3xl font-bold mb-8 text-center">Histórico de Simulações</h2>
+<style>
+  :root{ --brand:#0ea5e9; --brand-2:#38bdf8; --line:rgba(148,163,184,.22); }
+  .surface-dark{
+    background:
+      radial-gradient(1000px 600px at 10% 15%, rgba(56,189,248,.15), transparent 60%),
+      radial-gradient(800px 480px at 85% 20%, rgba(14,165,233,.12), transparent 60%),
+      linear-gradient(145deg,#0b1220,#0c1a2b 55%,#0b1324);
+    color:#e6effa; min-height:calc(100vh - 56px);
+  }
+  .title{
+    font-weight:800; letter-spacing:.2px; margin:0;
+    background:linear-gradient(180deg,#f0f9ff,#bfe9ff 60%,#7dd3fc);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  }
+  .panel{
+    border:1px solid rgba(56,189,248,.18);
+    border-radius:16px; background:#0f172a; box-shadow:0 18px 40px rgba(0,0,0,.35);
+  }
+  .tbl{
+    width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px;
+  }
+  .tbl thead th{
+    background:#0d1627; color:#cfe9ff; font-weight:700; padding:12px 14px; border-bottom:1px solid rgba(148,163,184,.22);
+  }
+  .tbl tbody td{ padding:12px 14px; border-top:1px solid rgba(148,163,184,.12); color:#e6effa; }
+  .tbl tbody tr:hover{ background:rgba(56,189,248,.06); }
+  .btn-grad{
+    display:inline-block; padding:6px 12px; border-radius:10px; font-weight:700; letter-spacing:.2px;
+    background:linear-gradient(180deg,#ef4444,#dc2626); color:#fff; text-decoration:none;
+    border:1px solid rgba(255,255,255,.08);
+  }
+  .btn-grad:hover{ filter:saturate(1.05) brightness(1.05); }
+  .muted{ color:#c8d5e8; }
+  .divider{ height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent); }
+</style>
 
-  <!-- Simulação de Investimentos -->
-  <div class="mb-10">
-    <h3 class="bg-blue-600 text-white text-lg font-semibold px-4 py-2 rounded-t-md text-center">
-      Simulação Investimentos
-    </h3>
-    <div class="overflow-x-auto">
-      <table class="min-w-full table-auto bg-gray-800 text-white">
-        <thead class="bg-gray-700 text-sm text-left">
-          <tr>
-            <th class="px-4 py-2">Data</th>
-            <th class="px-4 py-2">Rentabilidade</th>
-            <th class="px-4 py-2">Valor Inicial</th>
-            <th class="px-4 py-2">Valor Futuro</th>
-            <th class="px-4 py-2">Ação</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in historico %}
-            {% if item.tipo_simulacao == "Investimento" %}
-              <tr class="border-t border-gray-700 text-sm">
-                <td class="px-4 py-2">{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
-                <td class="px-4 py-2">{{ item.rentabilidade_anual }}%</td>
-                <td class="px-4 py-2">R$ {{ item.valor_inicial }}</td>
-                <td class="px-4 py-2">R$ {{ item.valor_futuro }}</td>
-                <td class="px-4 py-2">
-                  <a href="{% url 'excluir_simulacao' item.id %}" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-1 px-3 rounded shadow hover:shadow-md transition">
-                    Excluir
-                  </a>
-                </td>
+<section class="surface-dark py-5">
+  <div class="container-xxl">
+    <h1 class="title mb-3">Histórico de Simulações</h1>
+    <p class="muted mb-4">Seus registros ficam listados por tipo. Nada de dados fictícios — apenas o que você gerou.</p>
+
+    <!-- Investimento -->
+    <div class="panel p-3 mb-4">
+      <h2 class="h5 fw-bold mb-3">Simulação — Investimentos</h2>
+      <div class="table-responsive">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Rentabilidade</th>
+              <th>Valor Inicial</th>
+              <th>Valor Futuro</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tb-invest">
+            {% for item in historico %}
+              {% if item.tipo_simulacao == "Investimento" %}
+              <tr data-row="invest">
+                <td>{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
+                <td>{{ item.rentabilidade_anual }}%</td>
+                <td>R$ {{ item.valor_inicial }}</td>
+                <td>R$ {{ item.valor_futuro }}</td>
+                <td><a class="btn-grad" href="{% url 'excluir_simulacao' item.id %}">Excluir</a></td>
               </tr>
-            {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Tempo até a meta -->
+    <div class="panel p-3">
+      <h2 class="h5 fw-bold mb-3">Simulação — Tempo até a Meta</h2>
+      <div class="table-responsive">
+        <table class="tbl">
+          <thead>
+            <tr>
+              <th>Data</th>
+              <th>Rentabilidade</th>
+              <th>Valor Desejado</th>
+              <th>Valor Máximo Aplicado</th>
+              <th>Tempo Necessário</th>
+              <th>Ação</th>
+            </tr>
+          </thead>
+          <tbody id="tb-tempo">
+            {% for item in historico %}
+              {% if item.tipo_simulacao == "Investimento Necessário" %}
+              <tr data-row="tempo">
+                <td>{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
+                <td>{{ item.rentabilidade_anual }}%</td>
+                <td>R$ {{ item.valor_desejado }}</td>
+                <td>R$ {{ item.valor_maximo }}</td>
+                <td>{{ item.tempo_necessario }} meses</td>
+                <td><a class="btn-grad" href="{% url 'excluir_simulacao' item.id %}">Excluir</a></td>
+              </tr>
+              {% endif %}
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <div class="d-flex flex-wrap gap-2 mt-4">
+      <a href="{% url 'excluir_todas_simulacoes' %}" class="btn-grad">Excluir Todo o Histórico</a>
+      <a href="{% url 'menu_principal' %}" class="btn btn-outline-info ms-auto">Voltar ao menu</a>
     </div>
   </div>
+</section>
 
-  <!-- Simulação de Tempo de Acumulação -->
-  <div class="mb-10">
-    <h3 class="bg-blue-600 text-white text-lg font-semibold px-4 py-2 rounded-t-md text-center">
-      Simulação de Cálculo do tempo de acumulação
-    </h3>
-    <div class="overflow-x-auto">
-      <table class="min-w-full table-auto bg-gray-800 text-white">
-        <thead class="bg-gray-700 text-sm text-left">
-          <tr>
-            <th class="px-4 py-2">Data</th>
-            <th class="px-4 py-2">Rentabilidade</th>
-            <th class="px-4 py-2">Valor Desejado</th>
-            <th class="px-4 py-2">Valor Máximo Aplicado</th>
-            <th class="px-4 py-2">Tempo Necessário</th>
-            <th class="px-4 py-2">Ação</th>
-          </tr>
-        </thead>
-        <tbody>
-          {% for item in historico %}
-            {% if item.tipo_simulacao == "Investimento Necessário" %}
-              <tr class="border-t border-gray-700 text-sm">
-                <td class="px-4 py-2">{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
-                <td class="px-4 py-2">{{ item.rentabilidade_anual }}%</td>
-                <td class="px-4 py-2">R$ {{ item.valor_desejado }}</td>
-                <td class="px-4 py-2">R$ {{ item.valor_maximo }}</td>
-                <td class="px-4 py-2">{{ item.tempo_necessario }} meses</td>
-                <td class="px-4 py-2">
-                  <a href="{% url 'excluir_simulacao' item.id %}" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-1 px-3 rounded shadow hover:shadow-md transition">
-                    Excluir
-                  </a>
-                </td>
-              </tr>
-            {% endif %}
-          {% endfor %}
-        </tbody>
-      </table>
-    </div>
-  </div>
-
-  <!-- Botão excluir todo o histórico -->
-  <div class="text-center mb-6">
-    <a href="{% url 'excluir_todas_simulacoes' %}" class="bg-red-600 hover:bg-red-700 text-white text-sm font-medium py-2 px-4 rounded shadow hover:shadow-md transition">
-      Excluir Todo o Histórico
-    </a>
-  </div>
-
-  <!-- Botão voltar -->
-  <div class="text-center">
-    <a href="{% url 'menu_principal' %}" class="bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium py-2 px-4 rounded shadow hover:shadow-md transition">
-      Voltar
-    </a>
-  </div>
+<script>
+  // Mostra “vazio” quando não houver linhas do tipo
+  function ensureEmptyRow(tbodyId, colSpan){
+    const tb = document.getElementById(tbodyId);
+    if(!tb) return;
+    const has = Array.from(tb.querySelectorAll('tr')).some(tr => tr.dataset.row);
+    if(!has){
+      const tr = document.createElement('tr');
+      const td = document.createElement('td');
+      td.colSpan = colSpan; td.style.color='#bcd3e6'; td.style.padding='14px';
+      td.textContent = 'Nenhum registro ainda.';
+      tr.appendChild(td); tb.appendChild(tr);
+    }
+  }
+  ensureEmptyRow('tb-invest', 5);
+  ensureEmptyRow('tb-tempo', 6);
+</script>
 {% endblock %}
