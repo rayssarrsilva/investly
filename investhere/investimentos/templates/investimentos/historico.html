@@ -1,84 +1,166 @@
 {% extends "investimentos/base.html" %}
+
 {% block content %}
 <style>
-  :root{ --brand:#0ea5e9; --brand2:#38bdf8; --line:rgba(148,163,184,.22); --ink:#e6effa; --muted:#b6c6da; }
-  .surface{
+  :root{ --brand:#0ea5e9; --brand-2:#38bdf8; --line:rgba(148,163,184,.22); --muted:#c8d5e8; }
+  .surface-dark{
     background:
       radial-gradient(1000px 600px at 10% 15%, rgba(56,189,248,.15), transparent 60%),
       radial-gradient(800px 480px at 85% 20%, rgba(14,165,233,.12), transparent 60%),
-      linear-gradient(145deg,#0b1220,#0c1a2b 55%,#0b1324);
-    color:var(--ink);
+      linear-gradient(145deg, #0b1220, #0c1a2b 55%, #0b1324);
+    color:#e6effa;
   }
-  .h1{font-weight:800;letter-spacing:.2px;font-size:clamp(22px,4vw,32px)}
-  .muted{color:var(--muted)}
-  .table{
-    width:100%;border-collapse:separate;border-spacing:0 10px;
+  .title-xl{
+    font-weight:800; letter-spacing:.2px; margin:0 0 6px;
+    font-size:clamp(28px,4.6vw,44px);
+    background:linear-gradient(180deg,#f0f9ff,#bfe9ff 60%,#7dd3fc);
+    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
   }
-  .rowg{
-    background:#0f172a;border:1px solid var(--line);border-radius:12px;overflow:hidden;
+  .muted{ color:var(--muted); }
+  .divider{ height:1px; margin:24px 0; background:linear-gradient(90deg,transparent,var(--line),transparent); }
+
+  .two{ display:grid; grid-template-columns:1fr 1fr; gap:28px; }
+  @media (max-width: 992px){ .two{ grid-template-columns:1fr; } }
+
+  .section-head{
+    display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:10px;
   }
-  .cell{padding:12px 16px}
-  .badge{background:rgba(56,189,248,.14);color:#bfe9ff;border:1px solid rgba(56,189,248,.3);padding:4px 10px;border-radius:999px;font-weight:600}
-  .pill{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(180deg,var(--brand2),var(--brand));color:#082536;font-weight:800;border-radius:12px;padding:10px 14px;text-decoration:none}
-  .pill:hover{text-decoration:none;filter:saturate(1.05)}
-  .danger{background:#ef4444;color:#fff;border-radius:10px;padding:8px 12px;text-decoration:none}
-  .danger:hover{opacity:.9;color:#fff}
+  .pill{
+    display:inline-flex;align-items:center;gap:8px;
+    padding:8px 12px;border-radius:999px;font-weight:600;font-size:14px;
+    background:rgba(56,189,248,.12); border:1px solid rgba(56,189,248,.28); color:#bfe9ff;
+  }
+
+  table{ width:100%; border-collapse:collapse; }
+  thead th{
+    text-align:left; font-weight:700; font-size:13px; padding:10px 0; color:#dce8f8;
+    border-bottom:1px solid var(--line);
+  }
+  tbody td{ padding:12px 0; border-bottom:1px dashed rgba(148,163,184,.25); color:#e6effa; font-size:14px; }
+  tbody tr:last-child td{ border-bottom:none; }
+  .empty{
+    padding:18px; border:1px dashed rgba(148,163,184,.35); border-radius:14px; color:#cfeaff;
+  }
+
+  .btn-danger-soft{
+    background:rgba(239,68,68,.14); border:1px solid rgba(239,68,68,.34); color:#fecaca;
+    padding:8px 12px; border-radius:12px; text-decoration:none;
+  }
+  .btn-danger-soft:hover{ filter:saturate(1.1); }
+
+  .btn-primary-soft{
+    background:linear-gradient(180deg,var(--brand-2),var(--brand)); color:#082536; font-weight:800;
+    padding:10px 14px; border-radius:12px; text-decoration:none; display:inline-block;
+    box-shadow:0 14px 28px rgba(14,165,233,.28);
+  }
 </style>
 
-<section class="surface py-5">
-  <div class="container-xxl py-4">
+<section class="surface-dark py-5">
+  <div class="container-xxl">
+    <header class="mb-2">
+      <h1 class="title-xl">Histórico de simulações</h1>
+      <p class="muted">Tudo o que você calculou, em seções separadas por tipo.</p>
+    </header>
 
-    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
-      <div>
-        <h1 class="h1 mb-1">Histórico de simulações</h1>
-        <div class="muted">Tudo que você calculou, separado por tipo.</div>
-      </div>
-      <a href="{% url 'excluir_todas_simulacoes' %}" class="danger">Excluir todo o histórico</a>
+    <div class="mb-3">
+      <a class="btn-danger-soft" href="{% url 'excluir_todas_simulacoes' %}"><i class="bi bi-trash me-2"></i>Excluir todo o histórico</a>
     </div>
 
-    <!-- Investimento -->
-    <h3 class="mt-4 mb-2"><span class="badge">Simulação de Investimentos</span></h3>
-    {% with itens=historico|dictsortreversed:"data_criacao" %}
-    <div class="table">
-      {% for item in itens %}
-        {% if item.tipo_simulacao == "Investimento" %}
-        <div class="rowg">
-          <div class="cell"><strong>{{ item.data_criacao|date:"d/m/Y H:i" }}</strong></div>
-          <div class="cell">Rentab.: {{ item.rentabilidade_anual }}% CDI</div>
-          <div class="cell">Inicial: R$ {{ item.valor_inicial }}</div>
-          <div class="cell">Futuro: <strong>R$ {{ item.valor_futuro }}</strong></div>
-          <div class="cell text-end"><a class="danger" href="{% url 'excluir_simulacao' item.id %}">Excluir</a></div>
+    <div class="two">
+
+      <!-- Simulação de Investimentos -->
+      <section>
+        <div class="section-head">
+          <span class="pill"><i class="bi bi-graph-up"></i> Simulação de Investimentos</span>
         </div>
-        {% endif %}
-      {% empty %}
-        <div class="muted">Nenhuma simulação ainda.</div>
-      {% endfor %}
-    </div>
-    {% endwith %}
 
-    <!-- Tempo até a meta -->
-    <h3 class="mt-5 mb-2"><span class="badge">Cálculo do Tempo de Acumulação</span></h3>
-    {% with itens=historico|dictsortreversed:"data_criacao" %}
-    <div class="table">
-      {% for item in itens %}
-        {% if item.tipo_simulacao == "Investimento Necessário" %}
-        <div class="rowg">
-          <div class="cell"><strong>{{ item.data_criacao|date:"d/m/Y H:i" }}</strong></div>
-          <div class="cell">Rentab.: {{ item.rentabilidade_anual }}% CDI</div>
-          <div class="cell">Meta: R$ {{ item.valor_desejado }}</div>
-          <div class="cell">Aporte: R$ {{ item.valor_maximo }}</div>
-          <div class="cell">Tempo: <strong>{{ item.tempo_necessario }} meses</strong></div>
-          <div class="cell text-end"><a class="danger" href="{% url 'excluir_simulacao' item.id %}">Excluir</a></div>
+        {% with invest_list=historico|dictsortreversed:"data_criacao" %}
+        {% if invest_list %}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>% do CDI</th>
+                  <th>Valor inicial</th>
+                  <th>Valor futuro</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in historico %}
+                  {% if item.tipo_simulacao == "Investimento" %}
+                  <tr>
+                    <td>{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
+                    <td>{{ item.rentabilidade_anual }}%</td>
+                    <td>R$ {{ item.valor_inicial }}</td>
+                    <td>R$ {{ item.valor_futuro }}</td>
+                    <td>
+                      <a class="btn-danger-soft" href="{% url 'excluir_simulacao' item.id %}">Excluir</a>
+                    </td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="empty"><i class="bi bi-info-circle me-2"></i>Nenhuma simulação ainda.</div>
+        {% endif %}
+        {% endwith %}
+      </section>
+
+      <!-- Cálculo do Tempo de Acumulação -->
+      <section>
+        <div class="section-head">
+          <span class="pill"><i class="bi bi-hourglass-split"></i> Cálculo do Tempo de Acumulação</span>
         </div>
-        {% endif %}
-      {% empty %}
-        <div class="muted">Nenhum cálculo ainda.</div>
-      {% endfor %}
-    </div>
-    {% endwith %}
 
-    <div class="mt-4 d-flex gap-3">
-      <a class="pill" href="{% url 'menu_principal' %}">Voltar</a>
+        {% with tempo_list=historico|dictsortreversed:"data_criacao" %}
+        {% if tempo_list %}
+          <div class="table-wrap">
+            <table>
+              <thead>
+                <tr>
+                  <th>Data</th>
+                  <th>% do CDI</th>
+                  <th>Valor desejado</th>
+                  <th>Aporte máx.</th>
+                  <th>Tempo</th>
+                  <th>Ação</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for item in historico %}
+                  {% if item.tipo_simulacao == "Investimento Necessário" %}
+                  <tr>
+                    <td>{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
+                    <td>{{ item.rentabilidade_anual }}%</td>
+                    <td>R$ {{ item.valor_desejado }}</td>
+                    <td>R$ {{ item.valor_maximo }}</td>
+                    <td>{{ item.tempo_necessario }} meses</td>
+                    <td>
+                      <a class="btn-danger-soft" href="{% url 'excluir_simulacao' item.id %}">Excluir</a>
+                    </td>
+                  </tr>
+                  {% endif %}
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        {% else %}
+          <div class="empty"><i class="bi bi-info-circle me-2"></i>Nenhum cálculo ainda.</div>
+        {% endif %}
+        {% endwith %}
+      </section>
+
+    </div>
+
+    <div class="divider"></div>
+    <div class="d-flex gap-2 flex-wrap">
+      <a class="btn-primary-soft" href="{% url 'menu_principal' %}"><i class="bi bi-arrow-left me-2"></i>Voltar</a>
+      <a class="btn-ghost" href="{% url 'simulacao-investimentos' %}"><i class="bi bi-graph-up me-2"></i>Nova simulação</a>
+      <a class="btn-ghost" href="{% url 'calcular-investimento-necessario' %}"><i class="bi bi-hourglass me-2"></i>Tempo até a meta</a>
     </div>
   </div>
 </section>
