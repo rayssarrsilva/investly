@@ -1,133 +1,85 @@
 {% extends "investimentos/base.html" %}
-
 {% block content %}
 <style>
-  :root{ --brand:#0ea5e9; --brand-2:#38bdf8; --line:rgba(148,163,184,.22); }
-  .surface-dark{
+  :root{ --brand:#0ea5e9; --brand2:#38bdf8; --line:rgba(148,163,184,.22); --ink:#e6effa; --muted:#b6c6da; }
+  .surface{
     background:
       radial-gradient(1000px 600px at 10% 15%, rgba(56,189,248,.15), transparent 60%),
       radial-gradient(800px 480px at 85% 20%, rgba(14,165,233,.12), transparent 60%),
       linear-gradient(145deg,#0b1220,#0c1a2b 55%,#0b1324);
-    color:#e6effa; min-height:calc(100vh - 56px);
+    color:var(--ink);
   }
-  .title{
-    font-weight:800; letter-spacing:.2px; margin:0;
-    background:linear-gradient(180deg,#f0f9ff,#bfe9ff 60%,#7dd3fc);
-    -webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent;
+  .h1{font-weight:800;letter-spacing:.2px;font-size:clamp(22px,4vw,32px)}
+  .muted{color:var(--muted)}
+  .table{
+    width:100%;border-collapse:separate;border-spacing:0 10px;
   }
-  .panel{
-    border:1px solid rgba(56,189,248,.18);
-    border-radius:16px; background:#0f172a; box-shadow:0 18px 40px rgba(0,0,0,.35);
+  .rowg{
+    background:#0f172a;border:1px solid var(--line);border-radius:12px;overflow:hidden;
   }
-  .tbl{
-    width:100%; border-collapse:separate; border-spacing:0; overflow:hidden; border-radius:14px;
-  }
-  .tbl thead th{
-    background:#0d1627; color:#cfe9ff; font-weight:700; padding:12px 14px; border-bottom:1px solid rgba(148,163,184,.22);
-  }
-  .tbl tbody td{ padding:12px 14px; border-top:1px solid rgba(148,163,184,.12); color:#e6effa; }
-  .tbl tbody tr:hover{ background:rgba(56,189,248,.06); }
-  .btn-grad{
-    display:inline-block; padding:6px 12px; border-radius:10px; font-weight:700; letter-spacing:.2px;
-    background:linear-gradient(180deg,#ef4444,#dc2626); color:#fff; text-decoration:none;
-    border:1px solid rgba(255,255,255,.08);
-  }
-  .btn-grad:hover{ filter:saturate(1.05) brightness(1.05); }
-  .muted{ color:#c8d5e8; }
-  .divider{ height:1px; background:linear-gradient(90deg,transparent,var(--line),transparent); }
+  .cell{padding:12px 16px}
+  .badge{background:rgba(56,189,248,.14);color:#bfe9ff;border:1px solid rgba(56,189,248,.3);padding:4px 10px;border-radius:999px;font-weight:600}
+  .pill{display:inline-flex;align-items:center;gap:10px;background:linear-gradient(180deg,var(--brand2),var(--brand));color:#082536;font-weight:800;border-radius:12px;padding:10px 14px;text-decoration:none}
+  .pill:hover{text-decoration:none;filter:saturate(1.05)}
+  .danger{background:#ef4444;color:#fff;border-radius:10px;padding:8px 12px;text-decoration:none}
+  .danger:hover{opacity:.9;color:#fff}
 </style>
 
-<section class="surface-dark py-5">
-  <div class="container-xxl">
-    <h1 class="title mb-3">Histórico de Simulações</h1>
-    <p class="muted mb-4">Seus registros ficam listados por tipo. Nada de dados fictícios — apenas o que você gerou.</p>
+<section class="surface py-5">
+  <div class="container-xxl py-4">
+
+    <div class="d-flex flex-wrap align-items-end justify-content-between gap-3 mb-3">
+      <div>
+        <h1 class="h1 mb-1">Histórico de simulações</h1>
+        <div class="muted">Tudo que você calculou, separado por tipo.</div>
+      </div>
+      <a href="{% url 'excluir_todas_simulacoes' %}" class="danger">Excluir todo o histórico</a>
+    </div>
 
     <!-- Investimento -->
-    <div class="panel p-3 mb-4">
-      <h2 class="h5 fw-bold mb-3">Simulação — Investimentos</h2>
-      <div class="table-responsive">
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Rentabilidade</th>
-              <th>Valor Inicial</th>
-              <th>Valor Futuro</th>
-              <th>Ação</th>
-            </tr>
-          </thead>
-          <tbody id="tb-invest">
-            {% for item in historico %}
-              {% if item.tipo_simulacao == "Investimento" %}
-              <tr data-row="invest">
-                <td>{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
-                <td>{{ item.rentabilidade_anual }}%</td>
-                <td>R$ {{ item.valor_inicial }}</td>
-                <td>R$ {{ item.valor_futuro }}</td>
-                <td><a class="btn-grad" href="{% url 'excluir_simulacao' item.id %}">Excluir</a></td>
-              </tr>
-              {% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+    <h3 class="mt-4 mb-2"><span class="badge">Simulação de Investimentos</span></h3>
+    {% with itens=historico|dictsortreversed:"data_criacao" %}
+    <div class="table">
+      {% for item in itens %}
+        {% if item.tipo_simulacao == "Investimento" %}
+        <div class="rowg">
+          <div class="cell"><strong>{{ item.data_criacao|date:"d/m/Y H:i" }}</strong></div>
+          <div class="cell">Rentab.: {{ item.rentabilidade_anual }}% CDI</div>
+          <div class="cell">Inicial: R$ {{ item.valor_inicial }}</div>
+          <div class="cell">Futuro: <strong>R$ {{ item.valor_futuro }}</strong></div>
+          <div class="cell text-end"><a class="danger" href="{% url 'excluir_simulacao' item.id %}">Excluir</a></div>
+        </div>
+        {% endif %}
+      {% empty %}
+        <div class="muted">Nenhuma simulação ainda.</div>
+      {% endfor %}
     </div>
+    {% endwith %}
 
     <!-- Tempo até a meta -->
-    <div class="panel p-3">
-      <h2 class="h5 fw-bold mb-3">Simulação — Tempo até a Meta</h2>
-      <div class="table-responsive">
-        <table class="tbl">
-          <thead>
-            <tr>
-              <th>Data</th>
-              <th>Rentabilidade</th>
-              <th>Valor Desejado</th>
-              <th>Valor Máximo Aplicado</th>
-              <th>Tempo Necessário</th>
-              <th>Ação</th>
-            </tr>
-          </thead>
-          <tbody id="tb-tempo">
-            {% for item in historico %}
-              {% if item.tipo_simulacao == "Investimento Necessário" %}
-              <tr data-row="tempo">
-                <td>{{ item.data_criacao|date:"d/m/Y H:i" }}</td>
-                <td>{{ item.rentabilidade_anual }}%</td>
-                <td>R$ {{ item.valor_desejado }}</td>
-                <td>R$ {{ item.valor_maximo }}</td>
-                <td>{{ item.tempo_necessario }} meses</td>
-                <td><a class="btn-grad" href="{% url 'excluir_simulacao' item.id %}">Excluir</a></td>
-              </tr>
-              {% endif %}
-            {% endfor %}
-          </tbody>
-        </table>
-      </div>
+    <h3 class="mt-5 mb-2"><span class="badge">Cálculo do Tempo de Acumulação</span></h3>
+    {% with itens=historico|dictsortreversed:"data_criacao" %}
+    <div class="table">
+      {% for item in itens %}
+        {% if item.tipo_simulacao == "Investimento Necessário" %}
+        <div class="rowg">
+          <div class="cell"><strong>{{ item.data_criacao|date:"d/m/Y H:i" }}</strong></div>
+          <div class="cell">Rentab.: {{ item.rentabilidade_anual }}% CDI</div>
+          <div class="cell">Meta: R$ {{ item.valor_desejado }}</div>
+          <div class="cell">Aporte: R$ {{ item.valor_maximo }}</div>
+          <div class="cell">Tempo: <strong>{{ item.tempo_necessario }} meses</strong></div>
+          <div class="cell text-end"><a class="danger" href="{% url 'excluir_simulacao' item.id %}">Excluir</a></div>
+        </div>
+        {% endif %}
+      {% empty %}
+        <div class="muted">Nenhum cálculo ainda.</div>
+      {% endfor %}
     </div>
+    {% endwith %}
 
-    <div class="d-flex flex-wrap gap-2 mt-4">
-      <a href="{% url 'excluir_todas_simulacoes' %}" class="btn-grad">Excluir Todo o Histórico</a>
-      <a href="{% url 'menu_principal' %}" class="btn btn-outline-info ms-auto">Voltar ao menu</a>
+    <div class="mt-4 d-flex gap-3">
+      <a class="pill" href="{% url 'menu_principal' %}">Voltar</a>
     </div>
   </div>
 </section>
-
-<script>
-  // Mostra “vazio” quando não houver linhas do tipo
-  function ensureEmptyRow(tbodyId, colSpan){
-    const tb = document.getElementById(tbodyId);
-    if(!tb) return;
-    const has = Array.from(tb.querySelectorAll('tr')).some(tr => tr.dataset.row);
-    if(!has){
-      const tr = document.createElement('tr');
-      const td = document.createElement('td');
-      td.colSpan = colSpan; td.style.color='#bcd3e6'; td.style.padding='14px';
-      td.textContent = 'Nenhum registro ainda.';
-      tr.appendChild(td); tb.appendChild(tr);
-    }
-  }
-  ensureEmptyRow('tb-invest', 5);
-  ensureEmptyRow('tb-tempo', 6);
-</script>
 {% endblock %}
