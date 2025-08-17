@@ -54,7 +54,8 @@ Construir um sistema que:
 - Sem dados falsos → apenas cálculos baseados em entradas do usuário.  
 
 ---
-
+![Uploading investly.gif…]()
+---
 🛠️ **Como rodar localmente**  
 1. Clone este repositório  
    ```bash
