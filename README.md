@@ -1,63 +1,49 @@
 # Investly — Simulador Financeiro Premium  
-Objetivo: entregar uma aplicação web de simulação financeira com foco em **clareza, usabilidade e interface premium**, permitindo ao usuário projetar cenários de investimento e calcular o tempo necessário para atingir metas.
+Simulador financeiro para projetar rentabilidade e calcular o tempo necessário para atingir metas.
 
----
+## Demo
+<img width="1920" height="881" alt="investlycheck" src="https://github.com/user-attachments/assets/fc79bfe8-6d17-486f-8677-05ac4622e7a7" />
 
-🧩 **Problema**  
-Muitos simuladores online são confusos, apresentam interfaces antiquadas e, frequentemente, utilizam dados genéricos ou não transparentes. Isso gera **desconfiança** e reduz a adoção da ferramenta.
+## Funcionalidades
+1. Simulação de investimentos com diferentes taxas de retorno
+2. Cálculo do tempo necessário para atingir metas financeiras com base na taxa de juros, porcentagem de taxa e investimento (Selic, cdi, cdb)
+3. Projeção de rentabilidade ao longo dos anos
+4. Cdastro/Login simples e persistente
+5. Banco de dados persistente para salvar simulações
 
----
+## Tech Stack
+- Database: PostgreSQL
+- Backend: Django + Django REST Framework (API RESTful)
+- Frontend: Bootstrap
+- Auth/Security: Autenticação padrão do Django, CSRF, JWT Tokens, Swaggger para documentação da API
+- Testing/CI: Django Test Framework, Github Actions (pipeline de CI/CD)
 
-💡 **Motivação**  
-Construir um sistema que:  
-- Oferece **transparência** (sem números falsos).  
-- Tem **UI premium e responsiva**, similar a plataformas profissionais.  
-- Ajuda o usuário a **planejar objetivos financeiros reais**.  
-- Fornece **histórico de simulações** para acompanhamento contínuo.  
+  ## Setup
+1. Clone o repositório
+```
+git clone https://github.com/rayssarrsilva/investly.git
+cd investly
+```
+2. Instale as dependências
+```
+pip install -r requirements.txt
+```
+3. Configure as variáveis de ambiente (veja .env.example):
+```
+DATABASE_URL
+SECRET_KEY
+DEBUG
+```
+4. Rode localmente
+```
+uvicorn app.main:app --reload
+```
 
----
-
-✅ **Solução**  
-- Interface limpa, elegante e responsiva.  
-- Dois simuladores principais:  
-  - **Simulação de Investimentos** (crescimento futuro do capital).  
-  - **Cálculo de Tempo até a Meta** (prazo necessário para atingir um valor-alvo).  
-- Histórico organizado e exportável.  
-- Fluxo de autenticação seguro (login, logout, cadastro).  
-
----
-
-🔎 **Principais funcionalidades**  
-- Registro e login de usuários.  
-- Simulação de valor futuro de investimentos com base em CDI.  
-- Estimativa de tempo até a meta com aportes mensais.  
-- Histórico individual de simulações.  
-- Exclusão de simulações ou de todo o histórico.  
-- Design premium, inspirado em interfaces modernas.  
-
----
-
-🧱 **Tecnologias & Decisões (por que usei)**  
-- **Django + DRF** → robustez no backend, autenticação pronta e API REST para futuras expansões.  
-- **SQLite** (dev) → simples e ágil no ambiente local.  
-- **Templates Django + CSS custom** → controle total do design, garantindo estilo premium.  
-- **Bootstrap Icons** → ícones leves e responsivos.  
-- **Mensageria nativa Django** → feedback direto ao usuário.  
-
----
-
-📈 **Boas práticas aplicadas**  
-- Estrutura de templates reaproveitável (`base.html`).  
-- Formulários estilizados com `widget_tweaks`.  
-- Navegação intuitiva (Menu → Simulações → Histórico).  
-- Layout responsivo (desktop e mobile).  
-- Sem dados falsos → apenas cálculos baseados em entradas do usuário.  
-
----
-![Uploading investly.gif…]()
----
-🛠️ **Como rodar localmente**  
-1. Clone este repositório  
-   ```bash
-   git clone https://github.com/seu-usuario/investly.git
-   cd investly
+## O que aprendi
+- Migração de deploy de AWS para Render, reduzindo custos e simplificando setup.
+- Decisão de usar FastAPI pela performance e facilidade de integração com frontend.
+- Trade-off entre usar Docker e runtime nativo do Render (optando por Python direto).
+- Aprimoramento da segurança no fluxo de autenticação com JWT.
+- Desenvolvimento em Django
+- Investimentos com base na Selic
+- Criação e integração de PostgreSQL render no web server do render
